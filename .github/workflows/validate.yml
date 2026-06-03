@@ -1,0 +1,19 @@
+name: Validar Commits
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Validar estructura
+        run: |
+          echo "✅ Validando estructura del proyecto..."
+          test -f README.md && echo "✓ README.md encontrado"
+          test -f CHANGELOG.md && echo "✓ CHANGELOG.md encontrado"
+          test -f .gitignore && echo "✓ .gitignore encontrado"
+          echo "✅ Validación completada"
