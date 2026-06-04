@@ -1,0 +1,172 @@
+{{!
+    @template block_coursecard/coursecard
+
+    Individual course card.
+
+    Context variables (per course):
+    * id, fullname, courseurl
+    * courseimage, hascourseimage, fallbackclass
+    * categoryname
+    * status: notstarted | inprogress | completed
+    * isinprogress, iscompleted, isnotstarted (booleans)
+    * progress (int 0-100), hasprogress, progresswidth, iscomplete100
+    * completedactivities, totalactivities
+    * lastaccess (string), haslastaccess
+    * instructor: { fullname, initials }, hasinstructor
+    * hascertificate, nocertificate, certificateurl, candownloadcert
+    * deadline: { name, dayslefttext, isurgent }, hasdeadline
+}}
+<div class="nl-card nl-card--{{status}}">
+
+    {{! ── Banner ─────────────────────────────────────────────── }}
+    <a href="{{courseurl}}"
+       class="nl-card__banner {{^hascourseimage}}nl-card__banner--fallback {{fallbackclass}}{{/hascourseimage}}"
+       {{#hascourseimage}}style="background-image: url('{{courseimage}}');"{{/hascourseimage}}
+       tabindex="-1" aria-hidden="true">
+        <div class="nl-card__banner-overlay"></div>
+        {{^hascourseimage}}
+        <div class="nl-card__banner-icon" aria-hidden="true">
+            <i class="fa {{fallbackicon}}"></i>
+        </div>
+        {{/hascourseimage}}
+        <div class="nl-card__banner-badge">
+            {{#isinprogress}}
+            <span class="nl-badge nl-badge--inprogress">
+                <i class="fa fa-clock-o" aria-hidden="true"></i>
+                {{#str}}inprogress, block_coursecard{{/str}}
+            </span>
+            {{/isinprogress}}
+            {{#iscompleted}}
+            <span class="nl-badge nl-badge--completed">
+                <i class="fa fa-check-circle" aria-hidden="true"></i>
+                {{#str}}completed, block_coursecard{{/str}}
+            </span>
+            {{/iscompleted}}
+            {{#isnotstarted}}
+            <span class="nl-badge nl-badge--notstarted">
+                <i class="fa fa-circle-o" aria-hidden="true"></i>
+                {{#str}}notstarted, block_coursecard{{/str}}
+            </span>
+            {{/isnotstarted}}
+        </div>
+    </a>
+
+    {{! ── Body ──────────────────────────────────────────────── }}
+    <div class="nl-card__body">
+
+        {{! Title }}
+        <h3 class="nl-card__title">
+            <a href="{{courseurl}}">{{fullname}}</a>
+        </h3>
+
+        {{! Category + certificate indicator }}
+        <div class="nl-card__meta">
+            <span class="nl-card__category">
+                <i class="fa fa-folder-o" aria-hidden="true"></i>
+                {{categoryname}}
+            </span>
+            {{#hascertificate}}
+            <span class="nl-cert-pill nl-cert-pill--yes"
+                  title="{{#str}}hascertificate, block_coursecard{{/str}}">
+                <i class="fa fa-certificate" aria-hidden="true"></i>
+                {{#str}}certificate, block_coursecard{{/str}}
+            </span>
+            {{/hascertificate}}
+            {{#nocertificate}}
+            <span class="nl-cert-pill nl-cert-pill--no"
+                  title="{{#str}}nocertificate, block_coursecard{{/str}}">
+                <i class="fa fa-ban" aria-hidden="true"></i>
+                {{#str}}nocertificate, block_coursecard{{/str}}
+            </span>
+            {{/nocertificate}}
+        </div>
+
+        {{! Instructor }}
+        {{#hasinstructor}}
+        <div class="nl-card__instructor">
+            <div class="nl-avatar" aria-hidden="true">{{instructor.initials}}</div>
+            <span>{{instructor.fullname}}</span>
+        </div>
+        {{/hasinstructor}}
+
+        {{! Progress bar with % label on top-right }}
+        {{#hasprogress}}
+        <div class="nl-progress">
+            <div class="nl-progress__header">
+                <span class="nl-progress__label">
+                    {{#str}}progress, block_coursecard{{/str}}
+                </span>
+                <span class="nl-progress__pct {{#iscomplete100}}nl-progress__pct--complete{{/iscomplete100}}">
+                    {{progress}}%
+                </span>
+            </div>
+            <div class="nl-progress__track"
+                 role="progressbar"
+                 aria-valuenow="{{progress}}"
+                 aria-valuemin="0"
+                 aria-valuemax="100"
+                 aria-label="{{#str}}progress, block_coursecard{{/str}} {{progress}}%">
+                <div class="nl-progress__fill {{#iscomplete100}}nl-progress__fill--complete{{/iscomplete100}}"
+                     style="width: {{progresswidth}}%;"></div>
+            </div>
+        </div>
+        {{/hasprogress}}
+
+        {{! Deadline strip }}
+        {{#hasdeadline}}
+        <div class="nl-strip {{#deadline.isurgent}}nl-strip--urgent{{/deadline.isurgent}}">
+            <i class="fa fa-calendar-times-o" aria-hidden="true"></i>
+            <span>
+                {{#str}}deadline, block_coursecard{{/str}}:
+                <strong>{{deadline.name}}</strong> — {{deadline.dayslefttext}}
+            </span>
+        </div>
+        {{/hasdeadline}}
+
+        {{! Completed + has Custom Certificate → ver curso + descargar }}
+        {{#iscompleted}}
+            {{#candownloadcert}}
+            <div class="nl-strip nl-strip--cert">
+                <i class="fa fa-certificate" aria-hidden="true"></i>
+                <span>{{#str}}certready, block_coursecard{{/str}}</span>
+            </div>
+            <a href="{{courseurl}}" class="nl-btn nl-btn--completed" style="margin-bottom:6px;">
+                <i class="fa fa-eye" aria-hidden="true"></i>
+                {{#str}}reviewcontent, block_coursecard{{/str}}
+            </a>
+            <a href="{{certificateurl}}"
+               class="nl-btn nl-btn--certificate"
+               target="_blank"
+               rel="noopener noreferrer">
+                <i class="fa fa-download" aria-hidden="true"></i>
+                {{#str}}downloadcertificate, block_coursecard{{/str}}
+            </a>
+            {{/candownloadcert}}
+            {{^candownloadcert}}
+            <div class="nl-strip nl-strip--success">
+                <i class="fa fa-trophy" aria-hidden="true"></i>
+                <span>{{#str}}congratulations, block_coursecard{{/str}}</span>
+            </div>
+            <a href="{{courseurl}}" class="nl-btn nl-btn--completed">
+                <i class="fa fa-eye" aria-hidden="true"></i>
+                {{#str}}reviewcontent, block_coursecard{{/str}}
+            </a>
+            {{/candownloadcert}}
+        {{/iscompleted}}
+
+        {{! In progress }}
+        {{#isinprogress}}
+        <a href="{{courseurl}}" class="nl-btn nl-btn--inprogress">
+            {{#str}}continuecourse, block_coursecard{{/str}}
+        </a>
+        {{/isinprogress}}
+
+        {{! Not started }}
+        {{#isnotstarted}}
+        <a href="{{courseurl}}" class="nl-btn nl-btn--notstarted">
+            {{#str}}startcourse, block_coursecard{{/str}}
+        </a>
+        {{/isnotstarted}}
+
+    </div>{{! /.nl-card__body }}
+</div>{{! /.nl-card }}

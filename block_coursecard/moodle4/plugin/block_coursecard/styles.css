@@ -1,0 +1,384 @@
+/* =============================================================
+   block_coursecard — Course Card Styles
+   Compatible: Moodle 4.1 – 4.9 (Boost / Boost-based themes)
+   ============================================================= */
+
+/* ── Grid ────────────────────────────────────────────────────── */
+.block-coursecard .nl-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 1.4rem !important;
+    padding: 0.25rem 0;
+}
+
+/* ── Card ────────────────────────────────────────────────────── */
+.block-coursecard .nl-card {
+    display: flex !important;
+    flex-direction: column !important;
+    border-radius: 12px !important;
+    border: 1px solid rgba(0, 0, 0, 0.09) !important;
+    border-left: 5px solid transparent !important;
+    background: #fff !important;
+    overflow: hidden !important;
+    transition: box-shadow 0.18s ease, transform 0.18s ease !important;
+    color: #222 !important;
+}
+
+.block-coursecard .nl-card:hover {
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.12) !important;
+    transform: translateY(-4px) !important;
+}
+
+/* Status border-left colors — naranja / verde / índigo */
+.block-coursecard .nl-card--inprogress { border-left-color: #E07B00 !important; }
+.block-coursecard .nl-card--completed  { border-left-color: #1D9E75 !important; }
+.block-coursecard .nl-card--notstarted { border-left-color: #6366F1 !important; }
+
+/* ── Banner ──────────────────────────────────────────────────── */
+.block-coursecard .nl-card__banner {
+    position: relative !important;
+    height: 120px !important;
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    display: flex !important;
+    align-items: flex-end !important;
+    padding: 10px 13px !important;
+    flex-shrink: 0 !important;
+    text-decoration: none !important;
+    overflow: hidden !important;
+}
+
+.block-coursecard .nl-card__banner-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        to top,
+        rgba(0, 0, 0, 0.58) 0%,
+        rgba(0, 0, 0, 0.08) 55%,
+        transparent 100%
+    );
+    pointer-events: none;
+}
+
+/* Fallback backgrounds when no image is uploaded */
+.block-coursecard .nl-card__banner--fallback {
+    background-image: none !important;
+}
+.block-coursecard .nl-fallback--blue   { background-color: #0d3b6e !important; }
+.block-coursecard .nl-fallback--green  { background-color: #1b4d2e !important; }
+.block-coursecard .nl-fallback--purple { background-color: #2d2563 !important; }
+.block-coursecard .nl-fallback--teal   { background-color: #0d3d30 !important; }
+.block-coursecard .nl-fallback--amber  { background-color: #5a3200 !important; }
+
+/* Fallback icon centered in banner */
+.block-coursecard .nl-card__banner-icon {
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -62%) !important;
+    font-size: 42px !important;
+    color: rgba(255, 255, 255, 0.22) !important;
+    pointer-events: none !important;
+    z-index: 1 !important;
+}
+
+/* Status badge inside banner */
+.block-coursecard .nl-card__banner-badge {
+    position: relative;
+    z-index: 2;
+}
+
+.block-coursecard .nl-badge {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 5px !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    padding: 4px 11px !important;
+    border-radius: 6px !important;
+    background: rgba(0, 0, 0, 0.68) !important;
+    border: 1px solid rgba(255, 255, 255, 0.45) !important;
+    color: #fff !important;
+    letter-spacing: 0.03em !important;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.5) !important;
+}
+
+/* Colores de badge por estado */
+.block-coursecard .nl-badge--inprogress { color: #FFD08A !important; border-color: rgba(255,208,138,0.6) !important; }
+.block-coursecard .nl-badge--completed  { color: #9FE1CB !important; border-color: rgba(159,225,203,0.6) !important; }
+.block-coursecard .nl-badge--notstarted { color: #C7C5FF !important; border-color: rgba(199,197,255,0.6) !important; }
+
+/* ── Body ────────────────────────────────────────────────────── */
+.block-coursecard .nl-card__body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: 14px;
+}
+
+/* Title */
+.block-coursecard .nl-card__title {
+    font-size: 23px !important;
+    font-weight: 700 !important;
+    margin: 0 0 10px 0 !important;
+    line-height: 1.25 !important;
+    color: #111 !important;
+}
+
+.block-coursecard .nl-card__title a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.block-coursecard .nl-card__title a:hover {
+    text-decoration: underline;
+}
+
+/* Meta row: category + certificate pill */
+.block-coursecard .nl-card__meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    gap: 6px;
+}
+
+.block-coursecard .nl-card__category {
+    font-size: 11px;
+    color: #666;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Certificate pill */
+.block-coursecard .nl-cert-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 99px;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.block-coursecard .nl-cert-pill--yes {
+    background: #EEEDFE;
+    color: #3C3489;
+}
+
+.block-coursecard .nl-cert-pill--no {
+    background: #F1EFE8;
+    color: #5F5E5A;
+}
+
+/* Instructor row */
+.block-coursecard .nl-card__instructor {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.block-coursecard .nl-avatar {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: #B5D4F4;
+    color: #0C447C;
+    font-size: 9px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    text-transform: uppercase;
+}
+
+.block-coursecard .nl-card__instructor span {
+    font-size: 12px;
+    color: #555;
+}
+
+/* ── Stats chips ─────────────────────────────────────────────── */
+.block-coursecard .nl-stats {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.block-coursecard .nl-stat {
+    flex: 1;
+    background: #f5f5f5;
+    border-radius: 8px;
+    padding: 7px 8px;
+    font-size: 10px;
+    color: #666;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.block-coursecard .nl-stat strong {
+    font-size: 13px;
+    font-weight: 700;
+    color: #222;
+    display: block;
+}
+
+@media (prefers-color-scheme: dark) {
+    .block-coursecard .nl-stat          { background: #2a2a2a; color: #aaa; }
+    .block-coursecard .nl-stat strong   { color: #eee; }
+}
+
+/* ── Progress bar ────────────────────────────────────────────── */
+.block-coursecard .nl-progress {
+    margin-bottom: 10px;
+}
+
+.block-coursecard .nl-progress__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 5px;
+}
+
+.block-coursecard .nl-progress__label {
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    color: #555 !important;
+}
+
+.block-coursecard .nl-progress__pct {
+    font-size: 15px !important;
+    font-weight: 800 !important;
+    color: #185FA5 !important;
+}
+
+.block-coursecard .nl-progress__pct--complete {
+    color: #0F6E56 !important;
+}
+
+.block-coursecard .nl-progress__track {
+    height: 7px;
+    background: #dde1e7 !important; /* gris claro siempre, incluso en dark mode */
+    border-radius: 99px !important;
+    overflow: hidden !important;
+}
+
+.block-coursecard .nl-progress__fill {
+    height: 100%;
+    border-radius: 99px;
+    transition: width 0.4s ease;
+}
+
+/* Color del fill según estado */
+.block-coursecard .nl-card--inprogress .nl-progress__fill { background: #E07B00 !important; }
+.block-coursecard .nl-card--completed  .nl-progress__fill { background: #1D9E75 !important; }
+.block-coursecard .nl-card--notstarted .nl-progress__fill { background: #6366F1 !important; }
+
+/* Color del porcentaje según estado */
+.block-coursecard .nl-card--inprogress .nl-progress__pct { color: #E07B00 !important; }
+.block-coursecard .nl-card--completed  .nl-progress__pct { color: #0F6E56 !important; }
+.block-coursecard .nl-card--notstarted .nl-progress__pct { color: #4F46E5 !important; }
+
+/* ── Info strips ─────────────────────────────────────────────── */
+.block-coursecard .nl-strip {
+    display: flex;
+    align-items: flex-start;
+    gap: 7px;
+    font-size: 11px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    background: #f5f5f5;
+    color: #555;
+    line-height: 1.4;
+}
+
+.block-coursecard .nl-strip i {
+    flex-shrink: 0;
+    margin-top: 1px;
+    font-size: 13px;
+}
+
+.block-coursecard .nl-strip strong {
+    font-weight: 600;
+}
+
+/* Urgent deadline */
+.block-coursecard .nl-strip--urgent {
+    background: #FCEBEB;
+    color: #A32D2D;
+}
+
+/* Certificate ready */
+.block-coursecard .nl-strip--cert {
+    background: #EEEDFE;
+    color: #3C3489;
+}
+
+/* Completed without cert */
+.block-coursecard .nl-strip--success {
+    background: #EAF3DE;
+    color: #3B6D11;
+}
+
+/* ── CTA Buttons ─────────────────────────────────────────────── */
+.block-coursecard .nl-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    width: 100%;
+    padding: 9px 12px;
+    font-size: 13px;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    color: #fff;
+    text-decoration: none;
+    text-align: center;
+    transition: filter 0.15s ease, transform 0.12s ease;
+    margin-top: auto; /* push to bottom of card */
+}
+
+.block-coursecard .nl-btn:hover {
+    filter: brightness(1.1);
+    transform: translateY(-1px);
+    color: #fff;
+    text-decoration: none;
+}
+
+.block-coursecard .nl-btn:active {
+    transform: translateY(0);
+    filter: brightness(0.95);
+}
+
+/* Botones por estado — naranja / verde / índigo */
+.block-coursecard .nl-btn--inprogress  { background: #E07B00 !important; }
+.block-coursecard .nl-btn--notstarted  { background: #4F46E5 !important; }
+.block-coursecard .nl-btn--completed   { background: #0F6E56 !important; }
+.block-coursecard .nl-btn--certificate { background: #534AB7 !important; margin-top: 0 !important; }
+
+/* ── Empty state ─────────────────────────────────────────────── */
+.block-coursecard .nl-empty {
+    padding: 2rem 1rem;
+    text-align: center;
+    color: #888;
+    font-size: 14px;
+}
+
+/* ── Responsive tweaks ───────────────────────────────────────── */
+@media (max-width: 576px) {
+    .block-coursecard .nl-grid {
+        grid-template-columns: 1fr;
+    }
+}

@@ -1,0 +1,171 @@
+{{!
+    Template: block_academichistory/history_table
+
+    Renders the full academic history page for the current user.
+    Designed for the 'base' page layout (full width, no sidebar).
+
+    Context variables (exported by block_academichistory\output\history_table):
+        total_courses        {Number}  Total count of completed courses.
+        back_url             {String}  URL to the personal dashboard (/my).
+        has_courses          {Boolean} Whether the user has any completed courses.
+        courses              {Array}   List of completed course rows.
+            coursename           {String}  Full course name.
+            courseurl            {String}  Absolute URL to the course page.
+            completiondate       {String}  Formatted completion date.
+            grade                {Object}  Grade/status data.
+                has_grade        {Boolean} True if a numeric or scale grade exists.
+                value            {String}  The grade string (percentage or "Scale").
+                is_completed     {Boolean} True when no grade: show "Completed" badge.
+            certificate          {Object}  Certificate data.
+                has_link         {Boolean} Whether to render a clickable button.
+                label            {String}  Button or cell text.
+                link             {String}  Absolute URL, or empty string.
+                css_class        {String}  Bootstrap button classes (set by PHP).
+        paging_bar           {String}  Pre-rendered HTML paging bar (may be empty).
+        str_back             {String}  "Back to dashboard".
+        str_summary_title    {String}  "Academic summary".
+        str_summary_sub      {String}  Subtitle for the summary card.
+        str_completed_label  {String}  "Completed courses" (stat card label).
+        str_course           {String}  Column header: "Course".
+        str_date             {String}  Column header: "Completion Date".
+        str_grade            {String}  Column header: "Status / Grade".
+        str_completed        {String}  Badge label: "Completed".
+        str_certificate      {String}  Column header: "Certificate".
+        str_no_courses       {String}  Empty-state message.
+
+    @template block_academichistory/history_table
+    @copyright 2024 Your Name <your@email.com>
+    @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+}}
+
+<div class="container-fluid px-4 py-3">
+
+    {{! ── Back navigation ─────────────────────────────────────────────────── }}
+    <div class="mb-3">
+        <a href="{{back_url}}" class="btn btn-outline-secondary btn-sm">
+            <i class="fa fa-arrow-left mr-1" aria-hidden="true"></i>{{str_back}}
+        </a>
+    </div>
+
+    {{! ── Summary header card ─────────────────────────────────────────────── }}
+    <div class="card mb-4 shadow-sm border-0"
+         style="background: linear-gradient(135deg, #1a3a6b 0%, #2d5fa6 100%); color: #fff;">
+        <div class="card-body py-4 px-4">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 class="h2 font-weight-bold mb-1" style="color:#fff;">
+                        <i class="fa fa-graduation-cap mr-2" aria-hidden="true"></i>{{str_summary_title}}
+                    </h1>
+                    <p class="mb-0" style="color: rgba(255,255,255,0.80); font-size:0.95rem;">
+                        {{str_summary_sub}}
+                    </p>
+                </div>
+                <div class="col-md-4 text-md-right mt-3 mt-md-0">
+                    <div class="d-inline-block text-center px-4 py-2"
+                         style="background: rgba(255,255,255,0.15); border-radius: 12px;">
+                        <div class="display-4 font-weight-bold" style="color:#fff; line-height:1.1;">
+                            {{total_courses}}
+                        </div>
+                        <div style="color: rgba(255,255,255,0.85); font-size:0.85rem; text-transform:uppercase; letter-spacing:0.05em;">
+                            {{str_completed_label}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{! ── Empty state ─────────────────────────────────────────────────────── }}
+    {{^has_courses}}
+        <div class="card border-0 shadow-sm">
+            <div class="card-body text-center py-5">
+                <i class="fa fa-inbox fa-3x text-muted mb-3" aria-hidden="true"></i>
+                <p class="text-muted mb-0">{{str_no_courses}}</p>
+            </div>
+        </div>
+    {{/has_courses}}
+
+    {{! ── Courses table ───────────────────────────────────────────────────── }}
+    {{#has_courses}}
+        <div class="card border-0 shadow-sm">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover generaltable mb-0 w-100">
+                        <thead>
+                            <tr style="background-color: #f8f9fa;">
+                                <th scope="col" style="width:42%; padding: 14px 20px;">
+                                    <i class="fa fa-book mr-1 text-muted" aria-hidden="true"></i>
+                                    {{str_course}}
+                                </th>
+                                <th scope="col" style="width:20%; padding: 14px 20px;">
+                                    <i class="fa fa-calendar mr-1 text-muted" aria-hidden="true"></i>
+                                    {{str_date}}
+                                </th>
+                                <th scope="col" style="width:18%; padding: 14px 20px;">
+                                    <i class="fa fa-star mr-1 text-muted" aria-hidden="true"></i>
+                                    {{str_grade}}
+                                </th>
+                                <th scope="col" style="width:20%; padding: 14px 20px;">
+                                    <i class="fa fa-certificate mr-1 text-muted" aria-hidden="true"></i>
+                                    {{str_certificate}}
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#courses}}
+                            <tr style="vertical-align: middle;">
+                                <td style="padding: 14px 20px;">
+                                    <a href="{{courseurl}}"
+                                       class="font-weight-semibold text-decoration-none"
+                                       style="color: #1a3a6b; font-size: 0.95rem;">
+                                        {{coursename}}
+                                    </a>
+                                </td>
+                                <td style="padding: 14px 20px; color: #6c757d; font-size: 0.9rem;">
+                                    <i class="fa fa-check-circle text-success mr-1" aria-hidden="true"></i>
+                                    {{completiondate}}
+                                </td>
+                                <td style="padding: 14px 20px;">
+                                    {{#grade.has_grade}}
+                                        <span class="font-weight-bold" style="color: #1a3a6b;">
+                                            {{grade.value}}
+                                        </span>
+                                    {{/grade.has_grade}}
+                                    {{#grade.is_completed}}
+                                        <span class="badge badge-success px-2 py-1" style="font-size:0.8rem;">
+                                            &#10003; {{str_completed}}
+                                        </span>
+                                    {{/grade.is_completed}}
+                                </td>
+                                <td style="padding: 14px 20px;">
+                                    {{#certificate.has_link}}
+                                        <a href="{{certificate.link}}"
+                                           class="{{certificate.css_class}}"
+                                           target="_blank"
+                                           rel="noopener noreferrer">
+                                            <i class="fa fa-download mr-1" aria-hidden="true"></i>
+                                            {{certificate.label}}
+                                        </a>
+                                    {{/certificate.has_link}}
+                                    {{^certificate.has_link}}
+                                        <span class="text-muted" style="font-size:0.9rem;">
+                                            {{certificate.label}}
+                                        </span>
+                                    {{/certificate.has_link}}
+                                </td>
+                            </tr>
+                            {{/courses}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            {{#paging_bar}}
+                <div class="card-footer bg-white border-top">
+                    {{{paging_bar}}}
+                </div>
+            {{/paging_bar}}
+        </div>
+    {{/has_courses}}
+
+</div>

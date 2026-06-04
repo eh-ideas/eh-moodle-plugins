@@ -1,0 +1,48 @@
+{{!
+    Featured Video layout for mod_showcase.
+
+    Embeds a YouTube or Vimeo video in a responsive 16:9 container using
+    Bootstrap 5's built-in .ratio utility class.
+    The embed URL is pre-computed by showcase_build_embed_url() in lib.php.
+
+    @template  mod_showcase/video
+    @copyright 2024 Your Name <you@example.com>
+    @license   https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+
+    Example context:
+    {
+        "title":       "Introduction to the course",
+        "description": "<p>Watch this short video before starting.</p>",
+        "embed_url":   "https://www.youtube.com/embed/dQw4w9WgXcQ"
+    }
+}}
+<div class="mod-showcase mod-showcase-video my-3">
+
+    {{! ── Optional title ────────────────────────────────────────────────── }}
+    {{#title}}
+    <h2 class="h4 fw-semibold mb-3">{{title}}</h2>
+    {{/title}}
+
+    {{! ── 16:9 responsive iframe ─────────────────────────────────────────
+         Bootstrap .ratio + .ratio-16x9 sizes the iframe automatically.
+         No inline styles needed.
+    }}
+    <div class="ratio ratio-16x9 rounded overflow-hidden shadow-sm">
+        <iframe
+            src="{{embed_url}}"
+            title="{{title}}"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen
+            loading="lazy">
+        </iframe>
+    </div>
+
+    {{! ── Optional description ──────────────────────────────────────────── }}
+    {{#description}}
+    <div class="mt-3 text-body-secondary">
+        {{{description}}}
+    </div>
+    {{/description}}
+
+</div>

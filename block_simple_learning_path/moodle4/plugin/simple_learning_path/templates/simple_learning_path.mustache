@@ -1,0 +1,253 @@
+{{!
+    Template: block_simple_learning_path/simple_learning_path
+    Panel de administración — listado de rutas de aprendizaje.
+
+    Context:
+        createurl       string
+        reorder_url     string
+        sesskey         string
+        has_paths       bool
+        learning_paths  array
+            id              int
+            nombre_ruta     string
+            descripcion     string
+            hasDesc         bool
+            url             string
+            hasUrl          bool
+            estado          int   (1=publicada, 0=borrador)
+            estado_label    string
+            estado_done     bool
+            secuencial      bool
+            criterio_label  string
+            criterio_icon   string  (clase fa-*)
+            criterio_color  string  (Bootstrap: primary/success/warning/info/secondary/danger)
+            editurl         string
+            deleteurl       string
+            cursos          [{fullname}]
+            cursos_count    int
+            sortorder       int
+}}
+
+{{! ── Barra de acciones superior ──────────────────────────────────────── }}
+<div class="slp-admin-toolbar d-flex flex-wrap align-items-center justify-content-between mb-4 gap-2">
+
+    <div class="d-flex align-items-center gap-2" style="flex:1; min-width:200px;">
+        <div class="input-group" style="max-width:340px;">
+            <div class="input-group-prepend">
+                <span class="input-group-text bg-white border-right-0">
+                    <i class="fa fa-search text-muted" aria-hidden="true"></i>
+                </span>
+            </div>
+            <input type="text"
+                   id="slp-search"
+                   class="form-control border-left-0"
+                   placeholder="Buscar ruta..."
+                   aria-label="Buscar ruta de aprendizaje"
+                   autocomplete="off">
+        </div>
+        <span id="slp-search-count" class="text-muted small" style="white-space:nowrap;"></span>
+    </div>
+
+    <div class="d-flex gap-2">
+        <a href="{{reporturl}}" class="btn btn-outline-secondary">
+            <i class="fa fa-bar-chart mr-1" aria-hidden="true"></i>
+            Estadísticas
+        </a>
+        <a href="{{createurl}}" class="btn btn-primary">
+            <i class="fa fa-plus mr-1" aria-hidden="true"></i>
+            Crear Ruta
+        </a>
+    </div>
+
+</div>
+
+{{! ── Tabla de rutas ───────────────────────────────────────────────────── }}
+{{#has_paths}}
+<div class="slp-admin-hint text-muted small mb-2">
+    <i class="fa fa-arrows-v mr-1" aria-hidden="true"></i>
+    Arrastrá las filas para cambiar el orden de aparición en el bloque.
+</div>
+
+<div class="table-responsive">
+<table class="table table-hover slp-admin-table" id="slp-admin-table">
+    <thead>
+        <tr>
+            <th style="width:36px;" class="slp-col-drag" aria-label="Reordenar"></th>
+            <th>Nombre</th>
+            <th style="width:110px;">Estado</th>
+            <th>Criterio</th>
+            <th>Cursos</th>
+            <th style="width:160px;" class="text-right">Acciones</th>
+        </tr>
+    </thead>
+    <tbody id="slp-path-list">
+        {{#learning_paths}}
+        <tr id="slp-row-{{id}}"
+            class="slp-path-row"
+            data-id="{{id}}"
+            data-name="{{nombre_ruta}}">
+
+            {{! Drag handle }}
+            <td class="slp-td-drag text-muted align-middle" style="cursor:grab;">
+                <i class="fa fa-bars" aria-hidden="true" title="Arrastrar para reordenar"></i>
+            </td>
+
+            {{! Nombre + descripción }}
+            <td class="align-middle">
+                <div class="font-weight-bold slp-path-name">{{nombre_ruta}}</div>
+                {{#hasDesc}}
+                <div class="text-muted small slp-path-desc" style="
+                    display:-webkit-box;
+                    -webkit-line-clamp:1;
+                    -webkit-box-orient:vertical;
+                    overflow:hidden;">{{descripcion}}</div>
+                {{/hasDesc}}
+                {{#secuencial}}
+                <span class="badge badge-light border mt-1" style="font-size:0.65rem;">
+                    <i class="fa fa-sort-amount-asc mr-1" aria-hidden="true"></i>Secuencial
+                </span>
+                {{/secuencial}}
+            </td>
+
+            {{! Estado }}
+            <td class="align-middle">
+                {{#estado_done}}
+                <span class="badge badge-success slp-badge-estado">
+                    <i class="fa fa-circle mr-1" aria-hidden="true"></i>{{estado_label}}
+                </span>
+                {{/estado_done}}
+                {{^estado_done}}
+                <span class="badge badge-secondary slp-badge-estado">
+                    <i class="fa fa-circle-o mr-1" aria-hidden="true"></i>{{estado_label}}
+                </span>
+                {{/estado_done}}
+            </td>
+
+            {{! Criterio }}
+            <td class="align-middle">
+                <span class="slp-criterio-badge text-{{criterio_color}}">
+                    <i class="fa {{criterio_icon}} mr-1" aria-hidden="true"></i>
+                    {{criterio_label}}
+                </span>
+            </td>
+
+            {{! Cursos }}
+            <td class="align-middle">
+                {{#cursos_count}}
+                <details class="slp-courses-details">
+                    <summary class="slp-courses-summary text-muted small" style="cursor:pointer; list-style:none;">
+                        <i class="fa fa-book mr-1" aria-hidden="true"></i>
+                        {{cursos_count}} curso{{^secuencial}}s{{/secuencial}}{{#secuencial}}s (ord.){{/secuencial}}
+                        <i class="fa fa-caret-down ml-1" aria-hidden="true"></i>
+                    </summary>
+                    <ul class="list-unstyled mt-1 mb-0 pl-2 slp-courses-list" style="font-size:0.8rem;">
+                        {{#cursos}}
+                        <li class="text-muted">
+                            <i class="fa fa-circle" style="font-size:0.4rem; vertical-align:middle;" aria-hidden="true"></i>
+                            {{fullname}}
+                        </li>
+                        {{/cursos}}
+                    </ul>
+                </details>
+                {{/cursos_count}}
+                {{^cursos_count}}
+                <span class="text-muted small"><i class="fa fa-exclamation-triangle mr-1 text-warning"></i>Sin cursos</span>
+                {{/cursos_count}}
+            </td>
+
+            {{! Acciones }}
+            <td class="align-middle text-right" style="white-space:nowrap;">
+                <a href="{{editurl}}"
+                   class="btn btn-sm btn-outline-primary mr-1"
+                   title="Editar ruta">
+                    <i class="fa fa-pencil" aria-hidden="true"></i>
+                    <span class="d-none d-lg-inline ml-1">Editar</span>
+                </a>
+                <button type="button"
+                        class="btn btn-sm btn-outline-danger slp-delete-btn"
+                        data-id="{{id}}"
+                        data-name="{{nombre_ruta}}"
+                        data-url="{{deleteurl}}"
+                        title="Eliminar ruta">
+                    <i class="fa fa-trash" aria-hidden="true"></i>
+                    <span class="d-none d-lg-inline ml-1">Eliminar</span>
+                </button>
+            </td>
+
+        </tr>
+        {{/learning_paths}}
+    </tbody>
+</table>
+</div>
+
+{{! Sin resultados de búsqueda }}
+<div id="slp-no-results" class="alert alert-light text-center" style="display:none;">
+    <i class="fa fa-search fa-2x text-muted mb-2 d-block" aria-hidden="true"></i>
+    No se encontraron rutas que coincidan con la búsqueda.
+</div>
+{{/has_paths}}
+
+{{^has_paths}}
+<div class="alert alert-info text-center py-5">
+    <i class="fa fa-map-signs fa-3x text-info mb-3 d-block" aria-hidden="true"></i>
+    <h5>Todavía no hay rutas de aprendizaje</h5>
+    <p class="text-muted">Creá la primera ruta para empezar a organizar los cursos de tu plataforma.</p>
+    <a href="{{createurl}}" class="btn btn-primary mt-2">
+        <i class="fa fa-plus mr-1" aria-hidden="true"></i>Crear primera ruta
+    </a>
+</div>
+{{/has_paths}}
+
+{{! ── Modal de confirmación de eliminación ─────────────────────────────── }}
+<div class="modal fade" id="slp-delete-modal" tabindex="-1" role="dialog"
+     aria-labelledby="slp-delete-modal-label" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header border-0 pb-0">
+                <div class="d-flex align-items-center">
+                    <div class="rounded-circle bg-danger d-flex align-items-center justify-content-center mr-3"
+                         style="width:42px;height:42px;flex-shrink:0;">
+                        <i class="fa fa-trash text-white" aria-hidden="true"></i>
+                    </div>
+                    <h5 class="modal-title mb-0" id="slp-delete-modal-label">Eliminar ruta</h5>
+                </div>
+                <button type="button" class="close ml-auto" data-dismiss="modal" aria-label="Cerrar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body pt-2">
+                <p>¿Estás seguro que querés eliminar la ruta
+                    <strong id="slp-delete-name"></strong>?
+                </p>
+                <p class="text-muted small mb-0">
+                    <i class="fa fa-exclamation-circle mr-1" aria-hidden="true"></i>
+                    Esta acción no se puede deshacer. Los cursos no se eliminarán.
+                </p>
+            </div>
+            <div class="modal-footer border-0 pt-0">
+                <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">
+                    Cancelar
+                </button>
+                <a id="slp-delete-confirm" href="#" class="btn btn-danger">
+                    <i class="fa fa-trash mr-1" aria-hidden="true"></i>Eliminar
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{! ── AMD module ──────────────────────────────────────────────────────── }}
+{{#js}}
+require(['block_simple_learning_path/admin_list'], function(AdminList) {
+    AdminList.init({
+        tableId:    'slp-admin-table',
+        searchId:   'slp-search',
+        counterId:  'slp-search-count',
+        listId:     'slp-path-list',
+        noResultId: 'slp-no-results',
+        modalId:    'slp-delete-modal',
+        reorderUrl: '{{reorder_url}}',
+        sesskey:    '{{sesskey}}'
+    });
+});
+{{/js}}

@@ -1,0 +1,36 @@
+{{!
+    Full-width Image layout for mod_showcase.
+
+    Renders a single responsive image that stretches to fill the full width
+    of the course content column. Uses Bootstrap .img-fluid so the image
+    never overflows its container and scales correctly on all screen sizes.
+
+    @template  mod_showcase/image_only
+    @copyright 2024 Your Name <you@example.com>
+    @license   https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+
+    Example context:
+    {
+        "showcaseimage_url": "https://example.com/pluginfile.php/.../banner.jpg",
+        "title":             "Course welcome banner"
+    }
+}}
+<div class="mod-showcase mod-showcase-image-only my-3">
+
+    {{#showcaseimage_url}}
+    <img src="{{showcaseimage_url}}"
+         alt="{{title}}"
+         class="img-fluid w-100 rounded shadow-sm d-block">
+    {{/showcaseimage_url}}
+
+    {{! Placeholder shown in edit mode when no image has been uploaded yet }}
+    {{^showcaseimage_url}}
+    <div class="border rounded p-5 text-center text-body-secondary bg-light">
+        <p class="mb-0">
+            &#128444;&#65039; {{! 🖼️ framed picture emoji — no external dependency }}
+            No image uploaded yet. Edit this Showcase to add one.
+        </p>
+    </div>
+    {{/showcaseimage_url}}
+
+</div>

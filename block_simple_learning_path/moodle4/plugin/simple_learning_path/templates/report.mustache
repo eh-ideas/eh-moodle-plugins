@@ -1,0 +1,234 @@
+{{!
+    Template: block_simple_learning_path/report
+    Página de estadísticas de una ruta de aprendizaje.
+
+    Context:
+        pathName         string
+        pathId           int
+        indexUrl         string
+        totalStudents    int
+        totalCourses     int
+        avgProgress      int  (0-100)
+        pathSelector     [{id, nombre, selected, url}]
+        courses          [{courseName, enrolledInCourse, avgProgress, completedCount, completionPct,
+                           dist0_25, dist26_50, dist51_75, dist76_100}]
+        hasCourses       bool
+        chartLabelsJson  string  – JSON array de nombres de cursos
+        chartAvgJson     string  – JSON array de promedios de progreso
+        chartDoneJson    string  – JSON array de % de completación
+}}
+
+{{! ── Breadcrumb + navegación ──────────────────────────────────────────── }}
+<div class="d-flex flex-wrap align-items-center justify-content-between mb-4 gap-2">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-0 bg-transparent p-0">
+            <li class="breadcrumb-item">
+                <a href="{{indexUrl}}">
+                    <i class="fa fa-map-signs mr-1" aria-hidden="true"></i>Rutas de aprendizaje
+                </a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">Estadísticas</li>
+        </ol>
+    </nav>
+
+    {{! Selector de ruta }}
+    <div class="d-flex align-items-center gap-2">
+        <label for="slp-report-selector" class="text-muted small mb-0 mr-2">Ver ruta:</label>
+        <select id="slp-report-selector" class="form-control form-control-sm" style="max-width:280px;">
+            {{#pathSelector}}
+            <option value="{{url}}" {{#selected}}selected{{/selected}}>{{nombre}}</option>
+            {{/pathSelector}}
+        </select>
+    </div>
+</div>
+
+<h2 class="h4 mb-1">
+    <i class="fa fa-bar-chart mr-2 text-primary" aria-hidden="true"></i>
+    {{pathName}}
+</h2>
+<p class="text-muted small mb-4">Estadísticas de progreso y completación de alumnos.</p>
+
+{{! ── KPI cards ────────────────────────────────────────────────────────── }}
+<div class="row mb-4">
+
+    <div class="col-sm-4 mb-3">
+        <div class="card h-100 border-0 shadow-sm">
+            <div class="card-body text-center py-4">
+                <div class="display-4 font-weight-bold text-primary mb-1">{{totalStudents}}</div>
+                <div class="text-muted small">Alumnos matriculados</div>
+                <i class="fa fa-users fa-2x text-primary mt-2 opacity-25" aria-hidden="true"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-4 mb-3">
+        <div class="card h-100 border-0 shadow-sm">
+            <div class="card-body text-center py-4">
+                <div class="display-4 font-weight-bold text-info mb-1">{{avgProgress}}%</div>
+                <div class="text-muted small">Progreso promedio</div>
+                <div class="progress mt-2 mx-auto" style="height:6px; max-width:80px;">
+                    <div class="progress-bar bg-info" style="width:{{avgProgress}}%"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-4 mb-3">
+        <div class="card h-100 border-0 shadow-sm">
+            <div class="card-body text-center py-4">
+                <div class="display-4 font-weight-bold text-success mb-1">{{totalCourses}}</div>
+                <div class="text-muted small">Cursos en la ruta</div>
+                <i class="fa fa-book fa-2x text-success mt-2 opacity-25" aria-hidden="true"></i>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{{#hasCourses}}
+
+{{! ── Gráficos ─────────────────────────────────────────────────────────── }}
+<div class="row mb-4">
+
+    <div class="col-lg-7 mb-3">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-white border-0 pb-0">
+                <h6 class="font-weight-bold mb-0">
+                    <i class="fa fa-bar-chart mr-1 text-primary" aria-hidden="true"></i>
+                    Progreso promedio por curso
+                </h6>
+            </div>
+            <div class="card-body">
+                <canvas id="slp-chart-progress"
+                        aria-label="Gráfico de progreso por curso"
+                        role="img"
+                        style="max-height:280px;"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-5 mb-3">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-white border-0 pb-0">
+                <h6 class="font-weight-bold mb-0">
+                    <i class="fa fa-check-circle mr-1 text-success" aria-hidden="true"></i>
+                    % de completación por curso
+                </h6>
+            </div>
+            <div class="card-body">
+                <canvas id="slp-chart-done"
+                        aria-label="Gráfico de completación por curso"
+                        role="img"
+                        style="max-height:280px;"></canvas>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{{! ── Tabla detalle por curso ──────────────────────────────────────────── }}
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-header bg-white">
+        <h6 class="font-weight-bold mb-0">
+            <i class="fa fa-table mr-1 text-secondary" aria-hidden="true"></i>
+            Detalle por curso
+        </h6>
+    </div>
+    <div class="table-responsive">
+    <table class="table table-hover mb-0">
+        <thead class="bg-light">
+            <tr>
+                <th>#</th>
+                <th>Curso</th>
+                <th class="text-center">Matriculados</th>
+                <th class="text-center">Prog. promedio</th>
+                <th class="text-center">Completaron</th>
+                <th>Distribución</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#courses}}
+            <tr>
+                <td class="text-muted small align-middle">{{@index_plus_one}}</td>
+                <td class="align-middle font-weight-bold">{{courseName}}</td>
+
+                <td class="text-center align-middle">
+                    <span class="badge badge-light border">{{enrolledInCourse}}</span>
+                </td>
+
+                <td class="text-center align-middle" style="min-width:100px;">
+                    <div class="d-flex align-items-center justify-content-center gap-2">
+                        <div class="progress flex-grow-1" style="height:6px; max-width:60px;">
+                            <div class="progress-bar bg-primary" style="width:{{avgProgress}}%"></div>
+                        </div>
+                        <span class="font-weight-bold small text-primary">{{avgProgress}}%</span>
+                    </div>
+                </td>
+
+                <td class="text-center align-middle">
+                    <span class="font-weight-bold text-success">{{completedCount}}</span>
+                    <span class="text-muted small"> ({{completionPct}}%)</span>
+                </td>
+
+                <td class="align-middle" style="min-width:160px;">
+                    <div class="d-flex" style="height:16px; border-radius:4px; overflow:hidden; gap:1px;">
+                        {{#dist0_25}}
+                        <div class="bg-danger"
+                             style="flex:{{dist0_25}};"
+                             title="0–25%: {{dist0_25}} alumnos"></div>
+                        {{/dist0_25}}
+                        {{#dist26_50}}
+                        <div class="bg-warning"
+                             style="flex:{{dist26_50}};"
+                             title="26–50%: {{dist26_50}} alumnos"></div>
+                        {{/dist26_50}}
+                        {{#dist51_75}}
+                        <div class="bg-info"
+                             style="flex:{{dist51_75}};"
+                             title="51–75%: {{dist51_75}} alumnos"></div>
+                        {{/dist51_75}}
+                        {{#dist76_100}}
+                        <div class="bg-success"
+                             style="flex:{{dist76_100}};"
+                             title="76–100%: {{dist76_100}} alumnos"></div>
+                        {{/dist76_100}}
+                    </div>
+                    <div class="d-flex justify-content-between mt-1" style="font-size:0.6rem; color:#999;">
+                        <span>0%</span><span>25%</span><span>50%</span><span>75%</span><span>100%</span>
+                    </div>
+                </td>
+            </tr>
+            {{/courses}}
+        </tbody>
+    </table>
+    </div>
+</div>
+
+{{! Leyenda distribución }}
+<div class="d-flex flex-wrap gap-3 mb-4 small text-muted">
+    <span><span class="badge badge-danger mr-1">■</span> 0–25%</span>
+    <span><span class="badge badge-warning mr-1">■</span> 26–50%</span>
+    <span><span class="badge badge-info mr-1">■</span> 51–75%</span>
+    <span><span class="badge badge-success mr-1">■</span> 76–100%</span>
+</div>
+
+{{/hasCourses}}
+
+{{^hasCourses}}
+<div class="alert alert-warning">
+    <i class="fa fa-exclamation-triangle mr-2" aria-hidden="true"></i>
+    Esta ruta no tiene cursos asociados. <a href="{{indexUrl}}">Ir al listado</a> para editarla.
+</div>
+{{/hasCourses}}
+
+{{! ── AMD + Chart.js ──────────────────────────────────────────────────── }}
+{{#js}}
+require(['block_simple_learning_path/report'], function(Report) {
+    Report.init({
+        labels:      {{{chartLabelsJson}}},
+        avgProgress: {{{chartAvgJson}}},
+        completion:  {{{chartDoneJson}}},
+        selectorId:  'slp-report-selector'
+    });
+});
+{{/js}}

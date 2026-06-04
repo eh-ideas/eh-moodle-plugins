@@ -1,0 +1,445 @@
+{{!
+    Template: block_simple_learning_path/edit
+    Formulario de creación / edición de una Ruta de Aprendizaje.
+
+    Context variables:
+        id                      int     – 0 para crear, >0 para editar
+        is_editing              bool
+        action_url              string
+        cancel_url              string
+        sesskey                 string
+        nombre_ruta             string
+        descripcion             string  – Descripción de la ruta (nuevo v2)
+        url                     string
+        imagen_url              string  – URL de imagen de portada (nuevo v2)
+        estado                  int     – 1=publicada, 0=borrador (nuevo v2)
+        secuencial              int     – 1=secuencial (nuevo v2)
+        criterio                string
+        cohortid                int
+        criterio_rol            string  – Rol requerido (nuevo v2)
+        fecha_inicio_str        string  – Fecha inicio formateada (nuevo v2)
+        fecha_fin_str           string  – Fecha fin formateada (nuevo v2)
+        categories              array   – [{id, name}]
+        courses_by_category_json string – JSON para el módulo AMD
+        selected_courses        array   – [{id, fullname, categoryname}]
+        cohorts                 array   – [{id, name, selected}]
+        roles_available         array   – [{shortname, name, selected}] (nuevo v2)
+        uniqid                  string
+        criterio_siempre_checked   string
+        criterio_cursos_checked    string
+        criterio_curso_checked     string
+        criterio_cohorte_checked   string
+        criterio_fecha_checked     string  (nuevo v2)
+        criterio_rol_checked       string  (nuevo v2)
+        criterio_prereq_checked    string  (nuevo v2)
+        prerequisito_rutaid        int     (nuevo v2)
+        otras_rutas                array   – [{id, nombre, selected}] (nuevo v2)
+}}
+<form id="{{uniqid}}-form"
+      action="{{action_url}}"
+      method="post"
+      class="mform"
+      data-courses-by-category="{{{courses_by_category_json}}}">
+
+    <input type="hidden" name="sesskey"  value="{{sesskey}}">
+    <input type="hidden" name="id"       value="{{id}}">
+
+    {{! ── Información general ────────────────────────────────────────────── }}
+    <div class="card mb-4 shadow-sm">
+        <div class="card-header bg-light">
+            <h5 class="mb-0">
+                <i class="fa fa-info-circle mr-2" aria-hidden="true"></i>
+                {{#str}}general_information, block_simple_learning_path{{/str}}
+            </h5>
+        </div>
+        <div class="card-body">
+
+            <div class="form-group">
+                <label for="nombre_ruta" class="font-weight-bold">
+                    {{#str}}nombre_ruta, block_simple_learning_path{{/str}}
+                    <span class="text-danger" aria-hidden="true">*</span>
+                </label>
+                <input type="text"
+                       name="nombre_ruta"
+                       id="nombre_ruta"
+                       value="{{nombre_ruta}}"
+                       class="form-control"
+                       required
+                       maxlength="255"
+                       placeholder="{{#str}}nombre_ruta_placeholder, block_simple_learning_path{{/str}}">
+            </div>
+
+            <div class="form-group">
+                <label for="descripcion" class="font-weight-bold">
+                    {{#str}}descripcion_ruta, block_simple_learning_path{{/str}}
+                </label>
+                <textarea name="descripcion"
+                          id="descripcion"
+                          class="form-control"
+                          rows="3"
+                          maxlength="1000"
+                          placeholder="{{#str}}descripcion_ruta_placeholder, block_simple_learning_path{{/str}}">{{descripcion}}</textarea>
+                <small class="form-text text-muted">{{#str}}descripcion_ruta_help, block_simple_learning_path{{/str}}</small>
+            </div>
+
+            <div class="form-group">
+                <label for="imagen_url" class="font-weight-bold">
+                    {{#str}}imagen_url, block_simple_learning_path{{/str}}
+                </label>
+                <input type="url"
+                       name="imagen_url"
+                       id="imagen_url"
+                       value="{{imagen_url}}"
+                       class="form-control"
+                       maxlength="1000"
+                       placeholder="https://...">
+                <small class="form-text text-muted">{{#str}}imagen_url_help, block_simple_learning_path{{/str}}</small>
+            </div>
+
+            <div class="form-group">
+                <label for="url" class="font-weight-bold">
+                    {{#str}}url, block_simple_learning_path{{/str}}
+                </label>
+                <input type="text"
+                       name="url"
+                       id="url"
+                       value="{{url}}"
+                       class="form-control"
+                       maxlength="1000"
+                       placeholder="#">
+                <small class="form-text text-muted">{{#str}}url_help, block_simple_learning_path{{/str}}</small>
+            </div>
+
+            {{! ── Estado y modo ───────────────────────────────────────────── }}
+            <div class="form-row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="font-weight-bold">{{#str}}estado_ruta, block_simple_learning_path{{/str}}</label>
+                        <div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input"
+                                       type="radio"
+                                       name="estado"
+                                       id="estado_publicada"
+                                       value="1"
+                                       {{#estado}}checked{{/estado}}>
+                                <label class="form-check-label" for="estado_publicada">
+                                    <span class="badge badge-success">{{#str}}estado_publicada, block_simple_learning_path{{/str}}</span>
+                                </label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input"
+                                       type="radio"
+                                       name="estado"
+                                       id="estado_borrador"
+                                       value="0"
+                                       {{^estado}}checked{{/estado}}>
+                                <label class="form-check-label" for="estado_borrador">
+                                    <span class="badge badge-secondary">{{#str}}estado_borrador, block_simple_learning_path{{/str}}</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="font-weight-bold">{{#str}}modo_secuencial, block_simple_learning_path{{/str}}</label>
+                        <div class="form-check mt-1">
+                            <input class="form-check-input"
+                                   type="checkbox"
+                                   name="secuencial"
+                                   id="secuencial"
+                                   value="1"
+                                   {{#secuencial}}checked{{/secuencial}}>
+                            <label class="form-check-label" for="secuencial">
+                                {{#str}}secuencial_label, block_simple_learning_path{{/str}}
+                            </label>
+                        </div>
+                        <small class="form-text text-muted">{{#str}}secuencial_help, block_simple_learning_path{{/str}}</small>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    {{! ── Selección de cursos ─────────────────────────────────────────────── }}
+    <div class="card mb-4 shadow-sm">
+        <div class="card-header bg-light">
+            <h5 class="mb-0">
+                <i class="fa fa-book mr-2" aria-hidden="true"></i>
+                {{#str}}course_selection, block_simple_learning_path{{/str}}
+            </h5>
+        </div>
+        <div class="card-body">
+
+            <div class="form-row">
+                <div class="col-md-5">
+                    <div class="form-group">
+                        <label for="{{uniqid}}-category-select">{{#str}}choosecategory, block_simple_learning_path{{/str}}</label>
+                        <select name="category_select"
+                                id="{{uniqid}}-category-select"
+                                class="form-control">
+                            <option value="">{{#str}}select_category, block_simple_learning_path{{/str}}</option>
+                            {{#categories}}
+                                <option value="{{id}}">{{name}}</option>
+                            {{/categories}}
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-7">
+                    <div class="form-group">
+                        <label for="{{uniqid}}-course-search">{{#str}}searchcourse, block_simple_learning_path{{/str}}</label>
+                        <input type="text"
+                               id="{{uniqid}}-course-search"
+                               class="form-control"
+                               placeholder="{{#str}}search_course_placeholder, block_simple_learning_path{{/str}}">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="{{uniqid}}-course-select">{{#str}}choosecourse, block_simple_learning_path{{/str}}</label>
+                <select id="{{uniqid}}-course-select" class="form-control" size="6">
+                    {{! Las opciones se cargan via JS }}
+                </select>
+            </div>
+
+            <div class="d-flex align-items-center">
+                <button type="button"
+                        id="{{uniqid}}-add-course"
+                        class="btn btn-primary mr-2"
+                        disabled>
+                    <i class="fa fa-plus mr-1" aria-hidden="true"></i>
+                    {{#str}}add_course, block_simple_learning_path{{/str}}
+                </button>
+                <button type="button"
+                        id="{{uniqid}}-reset-search"
+                        class="btn btn-outline-secondary"
+                        disabled>
+                    <i class="fa fa-times mr-1" aria-hidden="true"></i>
+                    {{#str}}reset_search, block_simple_learning_path{{/str}}
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    {{! ── Cursos agregados ───────────────────────────────────────────────── }}
+    <div class="card mb-4 shadow-sm">
+        <div class="card-header bg-light d-flex align-items-center justify-content-between">
+            <h5 class="mb-0">
+                <i class="fa fa-list-ol mr-2" aria-hidden="true"></i>
+                {{#str}}added_courses, block_simple_learning_path{{/str}}
+            </h5>
+            <span id="{{uniqid}}-course-counter"
+                  class="badge badge-primary"
+                  style="display:none;">0 cursos</span>
+        </div>
+        <div class="card-body p-2">
+            <p class="text-muted small px-2 mb-2">
+                <i class="fa fa-arrows-v mr-1" aria-hidden="true"></i>
+                {{#str}}drag_to_reorder, block_simple_learning_path{{/str}}
+            </p>
+            <ul id="{{uniqid}}-added-courses" class="list-group list-group-flush">
+                {{#selected_courses}}
+                    <li class="list-group-item d-flex justify-content-between align-items-center slp-course-item"
+                        data-course-id="{{id}}"
+                        draggable="true">
+                        <span class="slp-drag-handle mr-2 text-muted" title="Arrastrar para reordenar">&#9776;</span>
+                        <span class="flex-grow-1">{{id}} – {{categoryname}} – {{fullname}}</span>
+                        <button type="button"
+                                class="btn btn-outline-danger btn-sm ml-2"
+                                data-remove-course="{{id}}"
+                                aria-label="{{#str}}remove, block_simple_learning_path{{/str}}">
+                            <i class="fa fa-times" aria-hidden="true"></i>
+                        </button>
+                        <input type="hidden" name="category_course[]" value="{{id}}">
+                    </li>
+                {{/selected_courses}}
+            </ul>
+        </div>
+    </div>
+
+    {{! ── Criterio de visualización ──────────────────────────────────────── }}
+    <div class="card mb-4 shadow-sm">
+        <div class="card-header bg-light">
+            <h5 class="mb-0">
+                <i class="fa fa-filter mr-2" aria-hidden="true"></i>
+                {{#str}}display_criteria, block_simple_learning_path{{/str}}
+            </h5>
+        </div>
+        <div class="card-body">
+
+            <p class="text-muted small">{{#str}}select_criteria, block_simple_learning_path{{/str}}</p>
+
+            <div class="form-check mb-2">
+                <input type="radio" name="criterio" id="criterio_siempre" value="siempre"
+                       class="form-check-input" {{criterio_siempre_checked}}>
+                <label for="criterio_siempre" class="form-check-label">
+                    <i class="fa fa-globe mr-1 text-success" aria-hidden="true"></i>
+                    {{#str}}criteria_option_siempre, block_simple_learning_path{{/str}}
+                </label>
+            </div>
+
+            <div class="form-check mb-2">
+                <input type="radio" name="criterio" id="criterio_cursos" value="cursos"
+                       class="form-check-input" {{criterio_cursos_checked}}>
+                <label for="criterio_cursos" class="form-check-label">
+                    <i class="fa fa-check-square-o mr-1 text-primary" aria-hidden="true"></i>
+                    {{#str}}criteria_option_cursos, block_simple_learning_path{{/str}}
+                </label>
+            </div>
+
+            <div class="form-check mb-2">
+                <input type="radio" name="criterio" id="criterio_curso" value="curso"
+                       class="form-check-input" {{criterio_curso_checked}}>
+                <label for="criterio_curso" class="form-check-label">
+                    <i class="fa fa-square-o mr-1 text-primary" aria-hidden="true"></i>
+                    {{#str}}criteria_option_curso, block_simple_learning_path{{/str}}
+                </label>
+            </div>
+
+            <div class="form-check mb-2">
+                <input type="radio" name="criterio" id="criterio_cohorte" value="cohorte"
+                       class="form-check-input" {{criterio_cohorte_checked}}>
+                <label for="criterio_cohorte" class="form-check-label">
+                    <i class="fa fa-users mr-1 text-warning" aria-hidden="true"></i>
+                    {{#str}}criteria_option_cohorte, block_simple_learning_path{{/str}}
+                </label>
+            </div>
+
+            <div class="form-check mb-2">
+                <input type="radio" name="criterio" id="criterio_fecha" value="fecha"
+                       class="form-check-input" {{criterio_fecha_checked}}>
+                <label for="criterio_fecha" class="form-check-label">
+                    <i class="fa fa-calendar mr-1 text-info" aria-hidden="true"></i>
+                    {{#str}}criteria_option_fecha, block_simple_learning_path{{/str}}
+                </label>
+            </div>
+
+            <div class="form-check mb-2">
+                <input type="radio" name="criterio" id="criterio_rol" value="rol"
+                       class="form-check-input" {{criterio_rol_checked}}>
+                <label for="criterio_rol" class="form-check-label">
+                    <i class="fa fa-id-badge mr-1 text-secondary" aria-hidden="true"></i>
+                    {{#str}}criteria_option_rol, block_simple_learning_path{{/str}}
+                </label>
+            </div>
+
+            <div class="form-check mb-3">
+                <input type="radio" name="criterio" id="criterio_prereq" value="prerequisito"
+                       class="form-check-input" {{criterio_prereq_checked}}>
+                <label for="criterio_prereq" class="form-check-label">
+                    <i class="fa fa-lock mr-1 text-danger" aria-hidden="true"></i>
+                    {{#str}}criteria_option_prereq, block_simple_learning_path{{/str}}
+                </label>
+            </div>
+
+            {{! ── Cohorte ──────────────────────────────────────────────────── }}
+            <div id="cohort-select-container" class="alert alert-light border mt-2" style="display:none;">
+                <div class="form-group mb-0">
+                    <label for="cohortid" class="font-weight-bold">
+                        <i class="fa fa-users mr-1" aria-hidden="true"></i>
+                        {{#str}}select_cohort, block_simple_learning_path{{/str}}
+                    </label>
+                    <select name="cohortid" id="cohortid" class="form-control">
+                        <option value="">{{#str}}select_cohort_option, block_simple_learning_path{{/str}}</option>
+                        {{#cohorts}}
+                            <option value="{{id}}" {{#selected}}selected{{/selected}}>{{name}}</option>
+                        {{/cohorts}}
+                    </select>
+                </div>
+            </div>
+
+            {{! ── Rango de fechas ─────────────────────────────────────────── }}
+            <div id="date-range-container" class="alert alert-light border mt-2" style="display:none;">
+                <div class="form-row">
+                    <div class="col-md-6">
+                        <div class="form-group mb-0">
+                            <label for="fecha_inicio" class="font-weight-bold">
+                                <i class="fa fa-calendar-check-o mr-1" aria-hidden="true"></i>
+                                {{#str}}fecha_inicio, block_simple_learning_path{{/str}}
+                            </label>
+                            <input type="date"
+                                   name="fecha_inicio"
+                                   id="fecha_inicio"
+                                   class="form-control"
+                                   value="{{fecha_inicio_str}}">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group mb-0">
+                            <label for="fecha_fin" class="font-weight-bold">
+                                <i class="fa fa-calendar-times-o mr-1" aria-hidden="true"></i>
+                                {{#str}}fecha_fin, block_simple_learning_path{{/str}}
+                            </label>
+                            <input type="date"
+                                   name="fecha_fin"
+                                   id="fecha_fin"
+                                   class="form-control"
+                                   value="{{fecha_fin_str}}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{! ── Rol ─────────────────────────────────────────────────────── }}
+            <div id="rol-select-container" class="alert alert-light border mt-2" style="display:none;">
+                <div class="form-group mb-0">
+                    <label for="criterio_rol_select" class="font-weight-bold">
+                        <i class="fa fa-id-badge mr-1" aria-hidden="true"></i>
+                        {{#str}}select_rol, block_simple_learning_path{{/str}}
+                    </label>
+                    <select name="criterio_rol" id="criterio_rol_select" class="form-control">
+                        <option value="">{{#str}}select_rol_option, block_simple_learning_path{{/str}}</option>
+                        {{#roles_available}}
+                            <option value="{{shortname}}" {{#selected}}selected{{/selected}}>{{name}}</option>
+                        {{/roles_available}}
+                    </select>
+                </div>
+            </div>
+
+            {{! ── Prerequisito de ruta ────────────────────────────────────── }}
+            <div id="prereq-container" class="alert alert-light border mt-2" style="display:none;">
+                <div class="form-group mb-0">
+                    <label for="prerequisito_rutaid" class="font-weight-bold">
+                        <i class="fa fa-lock mr-1" aria-hidden="true"></i>
+                        {{#str}}select_prereq_ruta, block_simple_learning_path{{/str}}
+                    </label>
+                    <select name="prerequisito_rutaid" id="prerequisito_rutaid" class="form-control">
+                        <option value="">{{#str}}select_prereq_option, block_simple_learning_path{{/str}}</option>
+                        {{#otras_rutas}}
+                            <option value="{{id}}" {{#selected}}selected{{/selected}}>{{nombre}}</option>
+                        {{/otras_rutas}}
+                    </select>
+                    <small class="form-text text-muted">{{#str}}prereq_help, block_simple_learning_path{{/str}}</small>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    {{! ── Botones de acción ──────────────────────────────────────────────── }}
+    <div class="form-group d-flex justify-content-center mt-4">
+        <button type="submit" class="btn btn-primary btn-lg mr-3">
+            <i class="fa fa-save mr-1" aria-hidden="true"></i>
+            {{#is_editing}}{{#str}}savechanges, core{{/str}}{{/is_editing}}
+            {{^is_editing}}{{#str}}create, core{{/str}}{{/is_editing}}
+        </button>
+        <a href="{{cancel_url}}" class="btn btn-outline-secondary btn-lg">
+            <i class="fa fa-times mr-1" aria-hidden="true"></i>
+            {{#str}}cancel, core{{/str}}
+        </a>
+    </div>
+
+</form>
+
+{{! Cargar el módulo AMD — solo un require, sin lógica inline }}
+{{#js}}
+require(['block_simple_learning_path/edit_form'], function(EditForm) {
+    var form = document.getElementById('{{uniqid}}-form');
+    var coursesData = form ? JSON.parse(form.getAttribute('data-courses-by-category') || '{}') : {};
+    EditForm.init('{{uniqid}}', coursesData);
+});
+{{/js}}

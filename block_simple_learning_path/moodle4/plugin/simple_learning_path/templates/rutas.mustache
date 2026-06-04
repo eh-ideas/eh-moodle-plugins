@@ -1,0 +1,250 @@
+{{!
+    Template: block_simple_learning_path/rutas
+    Vista del alumno: rutas de aprendizaje con diseño stepper/journey.
+
+    Context variables:
+        uniqueid   string  – ID único de la instancia del bloque
+        routes     array   – lista de rutas que el alumno puede ver
+            id              int
+            routeName       string
+            routeDesc       string
+            routeImageUrl   string
+            hasImage        bool
+            isCompleted     bool
+            routeProgress   int  (0-100)
+            coursesCompleted int
+            totalCourses    int
+            hasContinue     bool
+            continueUrl     string
+            secuencial      bool
+            firstRoute      bool
+            ariaExpanded    string
+            courses         array
+                courseName        string
+                courseUrl         string
+                courseCoverUrl    string
+                courseProgress    int
+                isCompleted       bool
+                isInProgress      bool
+                isPending         bool
+                isLocked          bool
+                completedDate     string
+}}
+<div class="slp-container" id="slp-{{uniqueid}}">
+
+    {{#routes}}
+    <div class="slp-route-card{{#isCompleted}} slp-route-card--done{{/isCompleted}}"
+         data-route-id="{{id}}">
+
+        {{! ── Encabezado de ruta ─────────────────────────────────────────── }}
+        <button type="button"
+                class="slp-route-header"
+                aria-expanded="{{ariaExpanded}}"
+                aria-controls="slp-body-{{uniqueid}}-{{id}}"
+                data-slp-toggle="slp-body-{{uniqueid}}-{{id}}">
+
+            {{! Imagen o badge de progreso }}
+            <div class="slp-route-thumb" aria-hidden="true">
+                {{#hasImage}}
+                    <img src="{{routeImageUrl}}"
+                         alt=""
+                         class="slp-route-thumb__img"
+                         loading="lazy">
+                    <div class="slp-route-thumb__overlay">
+                        {{#isCompleted}}
+                            <span class="slp-badge slp-badge--done">
+                                <i class="fa fa-check" aria-hidden="true"></i>
+                            </span>
+                        {{/isCompleted}}
+                        {{^isCompleted}}
+                            <span class="slp-badge slp-badge--progress">
+                                {{routeProgress}}%
+                            </span>
+                        {{/isCompleted}}
+                    </div>
+                {{/hasImage}}
+                {{^hasImage}}
+                    {{#isCompleted}}
+                        <div class="slp-route-thumb__icon slp-route-thumb__icon--done">
+                            <i class="fa fa-check-circle" aria-hidden="true"></i>
+                        </div>
+                    {{/isCompleted}}
+                    {{^isCompleted}}
+                        <div class="slp-route-thumb__icon slp-route-thumb__icon--progress"
+                             style="--slp-p:{{routeProgress}}">
+                            <svg viewBox="0 0 36 36" class="slp-ring" aria-hidden="true">
+                                <circle class="slp-ring__track" cx="18" cy="18" r="15.9"/>
+                                <circle class="slp-ring__fill"  cx="18" cy="18" r="15.9"
+                                        stroke-dasharray="{{routeProgress}},100"/>
+                            </svg>
+                            <span class="slp-ring__label">{{routeProgress}}%</span>
+                        </div>
+                    {{/isCompleted}}
+                {{/hasImage}}
+            </div>
+
+            {{! Info de la ruta }}
+            <div class="slp-route-info">
+                <div class="slp-route-name">{{routeName}}</div>
+                {{#routeDesc}}
+                    <div class="slp-route-desc">{{routeDesc}}</div>
+                {{/routeDesc}}
+
+                <div class="slp-route-progress">
+                    <div class="slp-progress-track">
+                        <div class="slp-progress-fill{{#isCompleted}} slp-progress-fill--done{{/isCompleted}}"
+                             style="width:{{routeProgress}}%"
+                             role="progressbar"
+                             aria-valuenow="{{routeProgress}}"
+                             aria-valuemin="0"
+                             aria-valuemax="100"
+                             aria-label="{{routeProgress}}% completado"></div>
+                    </div>
+                    <div class="slp-progress-meta">
+                        <span class="slp-progress-pct">{{routeProgress}}%</span>
+                        <span class="slp-progress-count">{{coursesCompleted}} / {{totalCourses}} cursos</span>
+                    </div>
+                </div>
+            </div>
+
+            {{! Acciones + chevron }}
+            <div class="slp-route-actions" aria-hidden="true">
+                {{#hasContinue}}
+                    <a href="{{continueUrl}}"
+                       class="slp-btn-continue"
+                       tabindex="-1"
+                       onclick="event.stopPropagation()">
+                        <i class="fa fa-play-circle" aria-hidden="true"></i>
+                        <span>Continuar</span>
+                    </a>
+                {{/hasContinue}}
+                {{#isCompleted}}
+                    <span class="slp-chip slp-chip--done">
+                        <i class="fa fa-star" aria-hidden="true"></i>
+                        Completada
+                    </span>
+                {{/isCompleted}}
+                <i class="fa fa-chevron-down slp-chevron" aria-hidden="true"></i>
+            </div>
+
+        </button>
+
+        {{! ── Cuerpo colapsable: stepper de cursos ─────────────────────── }}
+        <div id="slp-body-{{uniqueid}}-{{id}}"
+             class="slp-route-body{{#firstRoute}} slp-route-body--open{{/firstRoute}}"
+             role="region"
+             aria-label="Cursos de {{routeName}}">
+
+            {{#secuencial}}
+            <div class="slp-sequential-notice">
+                <i class="fa fa-info-circle" aria-hidden="true"></i>
+                Ruta secuencial — completá cada curso para desbloquear el siguiente.
+            </div>
+            {{/secuencial}}
+
+            <ol class="slp-timeline" aria-label="Cursos de la ruta">
+
+                {{#courses}}
+                <li class="slp-step
+                    {{#isCompleted}} slp-step--done{{/isCompleted}}
+                    {{#isInProgress}} slp-step--active{{/isInProgress}}
+                    {{#isPending}} slp-step--pending{{/isPending}}
+                    {{#isLocked}} slp-step--locked{{/isLocked}}">
+
+                    {{! Nodo del stepper }}
+                    <div class="slp-step__node" aria-hidden="true">
+                        {{#isCompleted}}
+                            <i class="fa fa-check"></i>
+                        {{/isCompleted}}
+                        {{#isInProgress}}
+                            <i class="fa fa-play"></i>
+                        {{/isInProgress}}
+                        {{#isPending}}
+                            <span class="slp-step__dot"></span>
+                        {{/isPending}}
+                        {{#isLocked}}
+                            <i class="fa fa-lock"></i>
+                        {{/isLocked}}
+                    </div>
+
+                    {{! Línea conectora (se oculta en el último) }}
+                    <div class="slp-step__line" aria-hidden="true"></div>
+
+                    {{! Tarjeta del curso }}
+                    <a href="{{courseUrl}}"
+                       class="slp-course-card{{#isLocked}} slp-course-card--locked{{/isLocked}}"
+                       {{#isLocked}}
+                           aria-disabled="true"
+                           tabindex="-1"
+                           title="Completá el curso anterior para desbloquear este"
+                       {{/isLocked}}>
+
+                        <img src="{{{courseCoverUrl}}}"
+                             alt=""
+                             class="slp-course-card__img"
+                             loading="lazy"
+                             aria-hidden="true">
+
+                        <div class="slp-course-card__body">
+                            <div class="slp-course-card__name">{{courseName}}</div>
+
+                            <div class="slp-course-card__status">
+                                {{#isCompleted}}
+                                    <span class="slp-status-chip slp-status-chip--done">
+                                        <i class="fa fa-check-circle" aria-hidden="true"></i>
+                                        Completado{{#completedDate}} · {{completedDate}}{{/completedDate}}
+                                    </span>
+                                {{/isCompleted}}
+                                {{#isInProgress}}
+                                    <span class="slp-status-chip slp-status-chip--active">
+                                        <i class="fa fa-circle" aria-hidden="true"></i>
+                                        En progreso
+                                    </span>
+                                {{/isInProgress}}
+                                {{#isPending}}
+                                    <span class="slp-status-chip slp-status-chip--pending">
+                                        <i class="fa fa-circle-o" aria-hidden="true"></i>
+                                        Pendiente
+                                    </span>
+                                {{/isPending}}
+                                {{#isLocked}}
+                                    <span class="slp-status-chip slp-status-chip--locked">
+                                        <i class="fa fa-lock" aria-hidden="true"></i>
+                                        Bloqueado
+                                    </span>
+                                {{/isLocked}}
+                            </div>
+
+                            {{#isInProgress}}
+                            <div class="slp-course-card__progress">
+                                <div class="slp-progress-track slp-progress-track--thin">
+                                    <div class="slp-progress-fill slp-progress-fill--active"
+                                         style="width:{{courseProgress}}%"></div>
+                                </div>
+                                <span class="slp-course-card__pct">{{courseProgress}}%</span>
+                            </div>
+                            {{/isInProgress}}
+                        </div>
+
+                        {{^isLocked}}
+                        <i class="fa fa-chevron-right slp-course-card__arrow" aria-hidden="true"></i>
+                        {{/isLocked}}
+
+                    </a>
+
+                </li>
+                {{/courses}}
+
+            </ol>
+        </div>
+
+    </div>
+    {{/routes}}
+
+</div>
+
+{{#js}}
+require(['block_simple_learning_path/main'], function(SLP) {
+    SLP.init('slp-{{uniqueid}}');
+});
+{{/js}}

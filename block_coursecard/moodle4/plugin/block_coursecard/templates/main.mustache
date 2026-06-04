@@ -1,0 +1,24 @@
+{{!
+    @template block_coursecard/main
+
+    Main wrapper template for the New Learning block.
+
+    Context variables:
+    * courses   - array of course data objects
+    * hascourses - bool
+    * uniqid    - unique ID for the block instance
+}}
+<div class="block-coursecard" id="block-coursecard-{{uniqid}}">
+    {{#hascourses}}
+    <div class="nl-grid">
+        {{#courses}}
+            {{> block_coursecard/coursecard}}
+        {{/courses}}
+    </div>
+    {{/hascourses}}
+    {{^hascourses}}
+    <div class="nl-empty">
+        <p>{{#str}}nocourses, block_coursecard{{/str}}</p>
+    </div>
+    {{/hascourses}}
+</div>

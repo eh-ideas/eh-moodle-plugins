@@ -1,0 +1,590 @@
+/*
+ * block_simple_learning_path — Estilos v2.0
+ * Nomenclatura BEM: .slp-[block]__[element]--[modifier]
+ * Usa variables CSS del tema Moodle para respetar cualquier paleta instalada.
+ *
+ * @package    block_simple_learning_path
+ * @copyright  2026 e-trainingsupport.com
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   0. CUSTOM PROPERTIES (fallbacks para temas sin las variables de Moodle)
+   ═══════════════════════════════════════════════════════════════════════════ */
+.slp-container {
+    --slp-primary:    var(--primary,   #0f6cbf);
+    --slp-primary-dk: var(--primary,   #0a4f99);
+    --slp-success:    var(--success,   #28a745);
+    --slp-warning:    var(--warning,   #ffc107);
+    --slp-info:       var(--info,      #17a2b8);
+    --slp-secondary:  var(--secondary, #6c757d);
+    --slp-danger:     var(--danger,    #dc3545);
+    --slp-light:      var(--light,     #f8f9fa);
+    --slp-dark:       var(--dark,      #343a40);
+    --slp-body-bg:    var(--body-bg,   #ffffff);
+    --slp-body-color: var(--body-color,#343a40);
+    --slp-border:     var(--border-color, #dee2e6);
+
+    --slp-radius:     10px;
+    --slp-radius-sm:  6px;
+    --slp-shadow:     0 2px 10px rgba(0, 0, 0, 0.08);
+    --slp-shadow-md:  0 4px 18px rgba(0, 0, 0, 0.12);
+    --slp-transition: 0.22s ease;
+
+    --slp-node-size:  32px;
+    --slp-line-color: var(--border-color, #dee2e6);
+    --slp-line-width: 2px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   1. CONTENEDOR PRINCIPAL
+   ═══════════════════════════════════════════════════════════════════════════ */
+.slp-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 4px 0;
+    font-family: inherit;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   2. ROUTE CARD
+   ═══════════════════════════════════════════════════════════════════════════ */
+.slp-route-card {
+    background: var(--slp-body-bg);
+    border: 1px solid var(--slp-border);
+    border-radius: var(--slp-radius);
+    box-shadow: var(--slp-shadow);
+    overflow: hidden;
+    transition: box-shadow var(--slp-transition);
+}
+
+.slp-route-card:hover {
+    box-shadow: var(--slp-shadow-md);
+}
+
+.slp-route-card--done {
+    border-left: 4px solid var(--slp-success);
+}
+
+/* ── Header ─────────────────────────────────────────────────────────────── */
+.slp-route-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 14px 16px;
+    background: var(--slp-light);
+    border: none;
+    border-bottom: 1px solid var(--slp-border);
+    cursor: pointer;
+    text-align: left;
+    transition: background var(--slp-transition);
+    color: var(--slp-body-color);
+    font-family: inherit;
+}
+
+.slp-route-header:hover,
+.slp-route-header:focus-visible {
+    background: #edf2f7;
+    outline: none;
+}
+
+.slp-route-header:focus-visible {
+    box-shadow: inset 0 0 0 3px var(--slp-primary);
+}
+
+.slp-route-card--done .slp-route-header {
+    background: #f0faf3;
+}
+
+/* ── Thumb (imagen o icono de progreso) ─────────────────────────────────── */
+.slp-route-thumb {
+    flex-shrink: 0;
+    position: relative;
+    width: 56px;
+    height: 56px;
+    border-radius: var(--slp-radius-sm);
+    overflow: hidden;
+}
+
+.slp-route-thumb__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.slp-route-thumb__overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.35);
+}
+
+.slp-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #fff;
+}
+
+.slp-badge--done     { background: var(--slp-success); font-size: 1rem; }
+.slp-badge--progress { background: var(--slp-primary); }
+
+.slp-route-thumb__icon {
+    width: 56px;
+    height: 56px;
+    border-radius: var(--slp-radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    position: relative;
+}
+
+.slp-route-thumb__icon--done {
+    background: #d4edda;
+    color: var(--slp-success);
+}
+
+.slp-route-thumb__icon--progress {
+    background: var(--slp-light);
+}
+
+/* Anillo SVG de progreso */
+.slp-ring {
+    position: absolute;
+    inset: 4px;
+    transform: rotate(-90deg);
+}
+
+.slp-ring__track {
+    fill: none;
+    stroke: var(--slp-border);
+    stroke-width: 3;
+}
+
+.slp-ring__fill {
+    fill: none;
+    stroke: var(--slp-primary);
+    stroke-width: 3;
+    stroke-linecap: round;
+    transition: stroke-dasharray 0.6s ease;
+}
+
+.slp-ring__label {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.6rem;
+    font-weight: 700;
+    color: var(--slp-primary);
+}
+
+/* ── Info de ruta ───────────────────────────────────────────────────────── */
+.slp-route-info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.slp-route-name {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--slp-dark);
+    line-height: 1.3;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.slp-route-desc {
+    font-size: 0.78rem;
+    color: var(--slp-secondary);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    line-height: 1.4;
+}
+
+.slp-route-progress {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.slp-progress-track {
+    height: 6px;
+    background: var(--slp-border);
+    border-radius: 99px;
+    overflow: hidden;
+}
+
+.slp-progress-track--thin { height: 4px; }
+
+.slp-progress-fill {
+    height: 100%;
+    background: var(--slp-primary);
+    border-radius: 99px;
+    transition: width 0.5s ease;
+}
+
+.slp-progress-fill--done   { background: var(--slp-success); }
+.slp-progress-fill--active { background: var(--slp-primary); }
+
+.slp-progress-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.slp-progress-pct {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--slp-primary);
+}
+
+.slp-progress-count {
+    font-size: 0.72rem;
+    color: var(--slp-secondary);
+}
+
+/* ── Acciones ────────────────────────────────────────────────────────────── */
+.slp-route-actions {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.slp-btn-continue {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 12px;
+    background: var(--slp-primary);
+    color: #fff;
+    border-radius: 99px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background var(--slp-transition), transform var(--slp-transition);
+    z-index: 1;
+}
+
+.slp-btn-continue:hover,
+.slp-btn-continue:focus {
+    background: var(--slp-primary-dk);
+    color: #fff;
+    text-decoration: none;
+    transform: translateY(-1px);
+}
+
+.slp-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    border-radius: 99px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.slp-chip--done {
+    background: #d4edda;
+    color: #155724;
+}
+
+.slp-chevron {
+    font-size: 0.8rem;
+    color: var(--slp-secondary);
+    transition: transform var(--slp-transition);
+    flex-shrink: 0;
+}
+
+.slp-route-header[aria-expanded="true"] .slp-chevron {
+    transform: rotate(180deg);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   3. ROUTE BODY (colapsable con CSS)
+   ═══════════════════════════════════════════════════════════════════════════ */
+.slp-route-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity    0.25s ease;
+    opacity: 0;
+}
+
+.slp-route-body--open {
+    max-height: 3000px;
+    opacity: 1;
+}
+
+.slp-sequential-notice {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 12px 16px 0;
+    padding: 8px 12px;
+    background: #fff8e1;
+    border-left: 3px solid var(--slp-warning);
+    border-radius: 0 var(--slp-radius-sm) var(--slp-radius-sm) 0;
+    font-size: 0.78rem;
+    color: #856404;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   4. STEPPER / TIMELINE
+   ═══════════════════════════════════════════════════════════════════════════ */
+.slp-timeline {
+    list-style: none;
+    margin: 0;
+    padding: 12px 16px 16px;
+    display: flex;
+    flex-direction: column;
+}
+
+.slp-step {
+    display: grid;
+    grid-template-columns: var(--slp-node-size) 1fr;
+    grid-template-rows: auto 1fr;
+    grid-template-areas:
+        "node content"
+        "line content";
+    column-gap: 12px;
+}
+
+/* Nodo círculo */
+.slp-step__node {
+    grid-area: node;
+    align-self: start;
+    margin-top: 10px;
+    width: var(--slp-node-size);
+    height: var(--slp-node-size);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    border: 2px solid var(--slp-border);
+    background: var(--slp-body-bg);
+    z-index: 1;
+    flex-shrink: 0;
+    transition: background var(--slp-transition), border-color var(--slp-transition);
+}
+
+.slp-step--done   .slp-step__node { background: var(--slp-success); border-color: var(--slp-success); color: #fff; }
+.slp-step--active .slp-step__node { background: var(--slp-primary); border-color: var(--slp-primary); color: #fff; }
+.slp-step--locked .slp-step__node { background: var(--slp-light);   border-color: var(--slp-border);  color: var(--slp-secondary); }
+
+.slp-step__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--slp-border);
+    display: block;
+}
+
+/* Línea conectora vertical */
+.slp-step__line {
+    grid-area: line;
+    justify-self: center;
+    width: var(--slp-line-width);
+    min-height: 8px;
+    background: var(--slp-line-color);
+    transition: background var(--slp-transition);
+}
+
+.slp-step--done .slp-step__line {
+    background: var(--slp-success);
+}
+
+.slp-step:last-child .slp-step__line {
+    display: none;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   5. COURSE CARD
+   ═══════════════════════════════════════════════════════════════════════════ */
+.slp-course-card {
+    grid-area: content;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 6px 0 10px;
+    padding: 10px 12px;
+    background: var(--slp-body-bg);
+    border: 1px solid var(--slp-border);
+    border-radius: var(--slp-radius-sm);
+    text-decoration: none;
+    color: var(--slp-body-color);
+    transition: border-color var(--slp-transition),
+                box-shadow    var(--slp-transition),
+                transform     var(--slp-transition);
+}
+
+.slp-course-card:hover {
+    border-color: var(--slp-primary);
+    box-shadow: 0 2px 12px rgba(15, 108, 191, 0.12);
+    transform: translateX(2px);
+    text-decoration: none;
+    color: var(--slp-body-color);
+}
+
+.slp-course-card--locked {
+    opacity: 0.55;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.slp-course-card__img {
+    width: 52px;
+    height: 52px;
+    border-radius: var(--slp-radius-sm);
+    object-fit: cover;
+    flex-shrink: 0;
+    background: var(--slp-light);
+}
+
+.slp-course-card__body {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.slp-course-card__name {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--slp-dark);
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.slp-course-card__status {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.slp-status-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 99px;
+    white-space: nowrap;
+}
+
+.slp-status-chip--done    { background: #d4edda; color: #155724; }
+.slp-status-chip--active  { background: #cce5ff; color: #004085; }
+.slp-status-chip--pending { background: var(--slp-light); color: var(--slp-secondary); }
+.slp-status-chip--locked  { background: var(--slp-light); color: var(--slp-secondary); }
+
+.slp-course-card__progress {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.slp-course-card__pct {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--slp-primary);
+    white-space: nowrap;
+}
+
+.slp-course-card__arrow {
+    flex-shrink: 0;
+    font-size: 0.7rem;
+    color: var(--slp-secondary);
+    transition: transform var(--slp-transition), color var(--slp-transition);
+}
+
+.slp-course-card:hover .slp-course-card__arrow {
+    transform: translateX(3px);
+    color: var(--slp-primary);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   6. FORMULARIO DE EDICIÓN
+   ═══════════════════════════════════════════════════════════════════════════ */
+.slp-drag-handle {
+    cursor: grab;
+    font-size: 1rem;
+    user-select: none;
+    touch-action: none;
+    color: var(--slp-secondary);
+}
+
+.slp-drag-handle:active { cursor: grabbing; }
+
+.slp-course-item.slp-dragging {
+    opacity: 0.5;
+    background: var(--slp-light);
+    border: 2px dashed var(--slp-primary);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   7. RESPONSIVE
+   ═══════════════════════════════════════════════════════════════════════════ */
+@media (max-width: 480px) {
+    .slp-route-header   { flex-wrap: wrap; gap: 8px; }
+    .slp-route-actions  { width: 100%; justify-content: flex-end; }
+    .slp-btn-continue span { display: none; }
+    .slp-btn-continue   { padding: 5px 10px; }
+    .slp-route-thumb    { width: 48px; height: 48px; }
+    .slp-timeline       { padding: 10px 10px 12px; }
+    .slp-course-card__img { width: 44px; height: 44px; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   8. ANIMACIÓN DE ENTRADA
+   ═══════════════════════════════════════════════════════════════════════════ */
+@keyframes slp-fade-up {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0);    }
+}
+
+.slp-route-card { animation: slp-fade-up 0.3s ease both; }
+.slp-route-card:nth-child(1) { animation-delay: 0.05s; }
+.slp-route-card:nth-child(2) { animation-delay: 0.10s; }
+.slp-route-card:nth-child(3) { animation-delay: 0.15s; }
+.slp-route-card:nth-child(4) { animation-delay: 0.20s; }
+.slp-route-card:nth-child(5) { animation-delay: 0.25s; }
+
+@media (prefers-reduced-motion: reduce) {
+    .slp-route-card,
+    .slp-route-body,
+    .slp-progress-fill,
+    .slp-btn-continue,
+    .slp-course-card,
+    .slp-chevron {
+        animation: none;
+        transition: none;
+    }
+}

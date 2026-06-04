@@ -1,0 +1,57 @@
+{{!
+    Template: block_academichistory/block_content
+
+    Renders the widget content shown inside the block on the personal dashboard (/my).
+    Designed for a narrow sidebar block: centered, stat-first layout.
+
+    Context variables (built in block_academichistory::get_content()):
+        count                {Number}  Total completed courses for the current user.
+        view_url             {String}  URL to the full history page (view.php).
+        has_courses          {Boolean} Whether the user has any completed courses.
+        str_completed_courses {String} "Cursos finalizados" label.
+        str_view_history     {String}  Button label: "Ver historial completo".
+        str_no_courses       {String}  Empty-state label.
+
+    @template block_academichistory/block_content
+    @copyright 2024 Your Name <your@email.com>
+    @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+}}
+
+<div class="block-academichistory-widget text-center py-2">
+
+    {{! ── Graduation cap icon ─────────────────────────────────────────────── }}
+    <div class="mb-2">
+        <i class="fa fa-graduation-cap fa-2x" aria-hidden="true"
+           style="color: #1a3a6b; opacity: 0.85;"></i>
+    </div>
+
+    {{! ── Stat: number of completed courses ───────────────────────────────── }}
+    <div class="font-weight-bold"
+         style="font-size: 2.8rem; line-height: 1.1; color: #1a3a6b;">
+        {{count}}
+    </div>
+    <div class="mb-3"
+         style="font-size: 0.78rem; text-transform: uppercase;
+                letter-spacing: 0.07em; color: #6c757d;">
+        {{str_completed_courses}}
+    </div>
+
+    {{! ── Divider ──────────────────────────────────────────────────────────── }}
+    <hr style="border-color: #e9ecef; margin: 0.75rem 0;">
+
+    {{! ── CTA button (full width) ─────────────────────────────────────────── }}
+    {{#has_courses}}
+        <a href="{{view_url}}"
+           class="btn btn-primary btn-block btn-sm mt-2">
+            <i class="fa fa-list-alt mr-1" aria-hidden="true"></i>
+            {{str_view_history}}
+        </a>
+    {{/has_courses}}
+
+    {{^has_courses}}
+        <p class="text-muted mb-2" style="font-size: 0.85rem;">
+            {{str_no_courses}}
+        </p>
+    {{/has_courses}}
+
+</div>

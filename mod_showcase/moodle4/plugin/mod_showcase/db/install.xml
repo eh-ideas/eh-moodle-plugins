@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<XMLDB PATH="mod/showcase/db" VERSION="20240101" COMMENT="XMLDB file for mod/showcase"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd">
+  <TABLES>
+    <TABLE NAME="showcase" COMMENT="Stores each instance of the mod_showcase activity">
+      <FIELDS>
+
+        <!-- Standard Moodle module fields -->
+        <FIELD NAME="id"           TYPE="int"  LENGTH="10"  NOTNULL="true"  SEQUENCE="true"/>
+        <FIELD NAME="course"       TYPE="int"  LENGTH="10"  NOTNULL="true"  DEFAULT="0"/>
+        <FIELD NAME="name"         TYPE="char" LENGTH="255" NOTNULL="true"  DEFAULT=""/>
+        <FIELD NAME="intro"        TYPE="text" NOTNULL="false"/>
+        <FIELD NAME="introformat"  TYPE="int"  LENGTH="4"   NOTNULL="true"  DEFAULT="0"/>
+        <FIELD NAME="timecreated"  TYPE="int"  LENGTH="10"  NOTNULL="true"  DEFAULT="0"/>
+        <FIELD NAME="timemodified" TYPE="int"  LENGTH="10"  NOTNULL="true"  DEFAULT="0"/>
+
+        <!-- Layout control -->
+        <FIELD NAME="layout_type"     TYPE="char" LENGTH="20"  NOTNULL="true" DEFAULT="hero"
+               COMMENT="Active layout: hero | video | download | image_only"/>
+
+        <!-- Shared text fields -->
+        <FIELD NAME="subtitle"        TYPE="char" LENGTH="255" NOTNULL="false"
+               COMMENT="Optional subtitle (hero, download)"/>
+        <FIELD NAME="button_text"     TYPE="char" LENGTH="100" NOTNULL="false"
+               COMMENT="Label for the CTA / download button"/>
+        <FIELD NAME="button_url"      TYPE="char" LENGTH="255" NOTNULL="false"
+               COMMENT="Destination URL for the CTA button (hero layout)"/>
+
+        <!-- Hero-specific fields -->
+        <FIELD NAME="overlay_color"   TYPE="char" LENGTH="20"  NOTNULL="true"  DEFAULT="#000000"
+               COMMENT="Hex colour for the background overlay"/>
+        <FIELD NAME="overlay_opacity" TYPE="int"  LENGTH="3"   NOTNULL="true"  DEFAULT="40"
+               COMMENT="Opacity of the overlay 0–100"/>
+
+        <!-- Video-specific fields -->
+        <FIELD NAME="video_url"       TYPE="char" LENGTH="255" NOTNULL="false"
+               COMMENT="YouTube or Vimeo URL to embed"/>
+
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary"   TYPE="primary" FIELDS="id"/>
+        <KEY NAME="fk_course" TYPE="foreign" FIELDS="course" REFTABLE="course" REFFIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="course" UNIQUE="false" FIELDS="course"/>
+      </INDEXES>
+    </TABLE>
+  </TABLES>
+</XMLDB>

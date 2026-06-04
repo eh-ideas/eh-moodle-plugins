@@ -1,0 +1,82 @@
+{{!
+    Download Card layout for mod_showcase.
+
+    Renders a Bootstrap 5 horizontal card with an optional thumbnail on the
+    left and title, subtitle, description and download button on the right.
+    On small screens the thumbnail stacks above the text (col-12 / col-md-*).
+
+    @template  mod_showcase/download
+    @copyright 2024 Your Name <you@example.com>
+    @license   https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+
+    Example context:
+    {
+        "title":             "Course Syllabus",
+        "subtitle":          "Academic year 2024–2025",
+        "description":       "<p>Download the full programme here.</p>",
+        "downloadimage_url": "https://example.com/thumb.png",
+        "downloadfile_url":  "https://example.com/pluginfile.php/.../syllabus.pdf",
+        "has_button":        true,
+        "button_text":       "Download PDF"
+    }
+}}
+<div class="mod-showcase mod-showcase-download my-3">
+    <div class="card border shadow-sm">
+        <div class="row g-0 align-items-center">
+
+            {{! ── Thumbnail column (hidden if no image was uploaded) ──────── }}
+            {{#downloadimage_url}}
+            <div class="col-12 col-md-3 text-center p-3">
+                <img src="{{downloadimage_url}}"
+                     alt="{{title}}"
+                     class="img-fluid rounded"
+                     style="max-height: 140px; object-fit: contain;">
+            </div>
+            {{/downloadimage_url}}
+
+            {{! ── Content column ─────────────────────────────────────────── }}
+            <div class="{{#downloadimage_url}}col-12 col-md-9{{/downloadimage_url}}
+                        {{^downloadimage_url}}col-12{{/downloadimage_url}}">
+                <div class="card-body">
+
+                    <h2 class="card-title h5 fw-semibold mb-1">{{title}}</h2>
+
+                    {{#subtitle}}
+                    <p class="card-subtitle text-body-secondary mb-2">{{subtitle}}</p>
+                    {{/subtitle}}
+
+                    {{#description}}
+                    <div class="card-text mb-3">
+                        {{{description}}}
+                    </div>
+                    {{/description}}
+
+                    {{! ── Download button ──────────────────────────────────
+                         The 'download' HTML attribute tells the browser to
+                         save the file instead of trying to open it inline.
+                    }}
+                    {{#has_button}}
+                    <a href="{{downloadfile_url}}"
+                       class="btn btn-primary"
+                       download>
+                        <span class="me-2">&#8595;</span>{{button_text}}
+                    </a>
+                    {{/has_button}}
+
+                    {{! Fallback: show a plain link if no button label was set }}
+                    {{^has_button}}
+                    {{#downloadfile_url}}
+                    <a href="{{downloadfile_url}}"
+                       class="btn btn-outline-primary"
+                       download>
+                        Download
+                    </a>
+                    {{/downloadfile_url}}
+                    {{/has_button}}
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<XMLDB PATH="blocks/simple_learning_path/db" VERSION="20260521" COMMENT="XMLDB file for Moodle blocks/simple_learning_path"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
+>
+  <TABLES>
+    <TABLE NAME="block_simple_learning_path" COMMENT="Tabla para rutas de aprendizaje">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="nombre_ruta" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="descripcion" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="Descripción de la ruta visible al alumno"/>
+        <FIELD NAME="url" TYPE="char" LENGTH="1000" NOTNULL="true" DEFAULT="#" SEQUENCE="false"/>
+        <FIELD NAME="imagen_url" TYPE="char" LENGTH="1000" NOTNULL="false" SEQUENCE="false" COMMENT="URL de imagen de portada de la ruta"/>
+        <FIELD NAME="criterio" TYPE="char" LENGTH="50" NOTNULL="false" SEQUENCE="false" COMMENT="curso, cursos, cohorte, siempre, fecha, rol"/>
+        <FIELD NAME="cohortid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="criterio_rol" TYPE="char" LENGTH="50" NOTNULL="false" SEQUENCE="false" COMMENT="student, teacher, manager, editingteacher"/>
+        <FIELD NAME="prerequisito_rutaid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="ID de ruta que debe completarse antes"/>
+        <FIELD NAME="fecha_inicio" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="Timestamp inicio de visibilidad"/>
+        <FIELD NAME="fecha_fin" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="Timestamp fin de visibilidad"/>
+        <FIELD NAME="estado" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="1" SEQUENCE="false" COMMENT="0=borrador 1=publicada"/>
+        <FIELD NAME="secuencial" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="0=libre 1=secuencial con prerequisitos"/>
+        <FIELD NAME="sortorder" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Orden de aparicion en el bloque"/>
+        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="estado_sortorder" UNIQUE="false" FIELDS="estado, sortorder"/>
+      </INDEXES>
+    </TABLE>
+    <TABLE NAME="block_simple_learning_path_courses" COMMENT="Relación entre rutas de aprendizaje y cursos">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="learningpathid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="courseid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="sortorder" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Orden del curso dentro de la ruta"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="learningpathid_fk" TYPE="foreign" FIELDS="learningpathid" REFTABLE="block_simple_learning_path" REFFIELDS="id"/>
+        <KEY NAME="courseid_fk" TYPE="foreign" FIELDS="courseid" REFTABLE="course" REFFIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="learningpath_sortorder" UNIQUE="false" FIELDS="learningpathid, sortorder"/>
+      </INDEXES>
+    </TABLE>
+  </TABLES>
+</XMLDB>

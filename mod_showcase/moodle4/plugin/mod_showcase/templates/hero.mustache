@@ -1,0 +1,73 @@
+{{!
+    Hero Banner layout for mod_showcase.
+
+    Renders a full-width banner with a background image, a configurable
+    colour overlay, a title, optional subtitle, optional description and
+    an optional call-to-action button.
+
+    The overlay is an absolutely-positioned SIBLING of the content div so
+    its CSS opacity only affects the colour layer — not the text above it.
+
+    @template  mod_showcase/hero
+    @copyright 2024 Your Name <you@example.com>
+    @license   https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+
+    Example context:
+    {
+        "title":               "Welcome to the course",
+        "subtitle":            "Start your learning journey today",
+        "description":         "<p>Everything you need is right here.</p>",
+        "heroimage_url":       "https://example.com/hero.jpg",
+        "overlay_color":       "#000000",
+        "overlay_opacity_css": "0.45",
+        "has_button":          true,
+        "button_text":         "Get started",
+        "button_url":          "https://example.com"
+    }
+}}
+<div class="mod-showcase mod-showcase-hero position-relative overflow-hidden w-100 rounded"
+    {{#heroimage_url}}
+    style="background-image: url('{{heroimage_url}}'); background-size: cover; background-position: center; min-height: 420px;"
+    {{/heroimage_url}}
+    {{^heroimage_url}}
+    style="background-color: {{overlay_color}}; min-height: 420px;"
+    {{/heroimage_url}}>
+
+    {{! ── Colour overlay ────────────────────────────────────────────────────
+         Absolutely positioned, full size, sits behind the content.
+         Using CSS opacity (not rgba) so the teacher's chosen colour is
+         preserved exactly.  The sibling content div is unaffected.
+    }}
+    {{#heroimage_url}}
+    <div class="position-absolute top-0 start-0 w-100 h-100"
+         style="background-color: {{overlay_color}}; opacity: {{overlay_opacity_css}};"></div>
+    {{/heroimage_url}}
+
+    {{! ── Content ───────────────────────────────────────────────────────────
+         position-relative + z-index via Bootstrap so it sits above the overlay.
+    }}
+    <div class="position-relative d-flex flex-column align-items-center justify-content-center
+                text-center text-white py-5 px-4"
+         style="min-height: inherit;">
+
+        <h2 class="display-5 fw-bold mb-3">{{title}}</h2>
+
+        {{#subtitle}}
+        <p class="lead fs-4 mb-3 fw-normal opacity-75">{{subtitle}}</p>
+        {{/subtitle}}
+
+        {{#description}}
+        <div class="mb-4 fs-5 opacity-75">
+            {{{description}}}
+        </div>
+        {{/description}}
+
+        {{#has_button}}
+        <a href="{{button_url}}"
+           class="btn btn-light btn-lg px-4 mt-2 fw-semibold shadow-sm">
+            {{button_text}}
+        </a>
+        {{/has_button}}
+
+    </div>
+</div>
