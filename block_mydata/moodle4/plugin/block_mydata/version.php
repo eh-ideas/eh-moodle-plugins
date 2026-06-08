@@ -26,10 +26,10 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'block_mydata';
-$plugin->version = 2026060712; // YYYYMMDDXX.
+$plugin->version = 2026060800; // YYYYMMDDXX.
 $plugin->requires = 2022112800; // Requiere Moodle 4.1.
 $plugin->maturity = MATURITY_STABLE;
-$plugin->release = 'v2.0.0';
+$plugin->release = 'v2.0.1';
 $plugin->dependencies = array(
     'mod_customcert' => 2022041910,
 );

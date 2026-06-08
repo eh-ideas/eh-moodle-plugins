@@ -499,13 +499,28 @@
         min-width: 0;
     }
 
+    /* Number + badge stack vertically so the badge never overflows onto the icon. */
     .block_mydata .block_mydata-v2 .bm-card-num {
         font-size: 1.35rem;
+        flex-shrink: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 3px;
+    }
+
+    .block_mydata .block_mydata-v2 .bm-card-figure {
         white-space: nowrap;
+    }
+
+    .block_mydata .block_mydata-v2 .bm-badge {
+        margin-left: 0;
+        font-size: .58rem;
     }
 
     .block_mydata .block_mydata-v2 .bm-card-label {
         flex: 1;
+        min-width: 0;
         margin-top: 0;
         font-size: .84rem;
         color: #4a5568;

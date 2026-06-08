@@ -39,6 +39,9 @@ $string['credits_rights'] = 'Todos los derechos reservados.';
 // Card grid (admin).
 $string['card_visible'] = 'Mostrar u ocultar esta tarjeta';
 $string['card_accent'] = 'Color de acento';
+$string['card_link'] = 'Enlace al hacer clic';
+$string['card_link_ph'] = 'https://...  (opcional)';
+$string['card_link_help'] = 'A dónde lleva la tarjeta al hacer clic. Si lo dejás vacío se usa el destino por defecto (o ninguno, si esa tarjeta no tiene una página lógica en Moodle).';
 $string['card_heavy'] = 'Consumo elevado: esta tarjeta consulta los registros del sitio. En plataformas con mucho tráfico puede afectar el rendimiento. Actívala solo si la necesitás.';
 $string['zone_main'] = 'Tarjeta principal';
 $string['zone_secondary'] = 'Tarjeta secundaria';

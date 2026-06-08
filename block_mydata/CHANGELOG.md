@@ -1,5 +1,18 @@
 # Changelog — block_mydata
 
+## [2.0.1] — 2026-06-08
+
+### Cambiado
+- **Enlaces de tarjetas configurables**: cada tarjeta tiene ahora un campo de URL
+  en el panel de administración. Vacío = destino por defecto (o ninguno).
+- "Actividades completadas" ya no enlaza a `/my/courses.php` (no existe una página
+  de actividades completadas en Moodle): por defecto queda sin enlace.
+- "Actividades pendientes" apunta por defecto a la Línea de tiempo (`/my/`).
+
+### Corregido
+- Vista compacta (columna lateral): el badge "X vencidas" se superponía con el
+  icono; ahora baja debajo del número sin desbordar.
+
 ## [2.0.0] — 2026-06-07 — Estable (producción)
 
 ### Nuevo

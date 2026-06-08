@@ -86,11 +86,11 @@ class setting_cards_grid extends \admin_setting {
                 $color = $this->clean_colour($data['color_' . $id], $meta['color']);
                 set_config('color_' . $id, $color, 'block_mydata');
             }
-        }
 
-        // Resource-specific extra: certificates destination URL.
-        if (isset($data['certurl'])) {
-            set_config('certurl', clean_param($data['certurl'], PARAM_URL), 'block_mydata');
+            // Optional per-card link.
+            if (isset($data['url_' . $id])) {
+                set_config('url_' . $id, clean_param($data['url_' . $id], PARAM_URL), 'block_mydata');
+            }
         }
 
         return '';
@@ -192,22 +192,24 @@ class setting_cards_grid extends \admin_setting {
             . '</span>'
             . '</div>';
 
+        // Optional per-card link. Empty = built-in default (or no link).
+        $linkval = get_config('block_mydata', 'url_' . $id);
+        if (($linkval === false || $linkval === null || $linkval === '') && $id === 'certificates') {
+            // Backward compatibility with the old single 'certurl' setting.
+            $linkval = get_config('block_mydata', 'certurl');
+        }
+        $out .= '<div class="bm-admin-field bm-admin-field-full">'
+            . '<label>' . get_string('card_link', 'block_mydata') . '</label>'
+            . '<input type="text" inputmode="url" class="bm-text" name="' . $name . '[url_' . $id . ']" '
+            . 'placeholder="' . s(get_string('card_link_ph', 'block_mydata')) . '" value="' . s($linkval) . '">'
+            . '<small>' . get_string('card_link_help', 'block_mydata') . '</small>'
+            . '</div>';
+
         // Performance warning for cards that query the site logs.
         if (!empty($meta['heavy'])) {
             $out .= '<div class="bm-admin-warn">'
                 . '<i class="fa-solid fa-gauge-high"></i>'
                 . '<span>' . get_string('card_heavy', 'block_mydata') . '</span>'
-                . '</div>';
-        }
-
-        // Resource-specific extra variable: certificates URL.
-        if ($id === 'certificates') {
-            $certurl = get_config('block_mydata', 'certurl');
-            $out .= '<div class="bm-admin-field bm-admin-field-full">'
-                . '<label>' . get_string('certurl', 'block_mydata') . '</label>'
-                . '<input type="text" inputmode="url" class="bm-text" name="' . $name . '[certurl]" '
-                . 'placeholder="https://...  (opcional)" value="' . s($certurl) . '">'
-                . '<small>' . get_string('certurl_desc', 'block_mydata') . '</small>'
                 . '</div>';
         }
 

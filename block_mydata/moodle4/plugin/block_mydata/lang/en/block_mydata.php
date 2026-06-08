@@ -39,6 +39,9 @@ $string['credits_rights'] = 'All rights reserved.';
 // Card grid (admin).
 $string['card_visible'] = 'Show or hide this card';
 $string['card_accent'] = 'Accent colour';
+$string['card_link'] = 'Link on click';
+$string['card_link_ph'] = 'https://...  (optional)';
+$string['card_link_help'] = 'Where the card goes when clicked. Leave empty to use the built-in default (or none, if that card has no logical page in Moodle).';
 $string['card_heavy'] = 'High load: this card queries the site logs. On high-traffic platforms it may affect performance. Enable it only if you need it.';
 $string['zone_main'] = 'Main card';
 $string['zone_secondary'] = 'Secondary card';

@@ -309,11 +309,12 @@ class mydata implements renderable, templatable {
 
         $values = [];
 
-        // Pending activities (with overdue badge).
+        // Pending activities (with overdue badge). Default link: the Timeline,
+        // which is the closest core page to "things still to do".
         $values['pending'] = [
             'value' => $stats['activitiesdue'],
             'label' => get_string('pending_activities', 'block_mydata'),
-            'url'   => (new moodle_url('/calendar/view.php', ['view' => 'upcoming']))->out(false),
+            'url'   => $this->get_card_url('pending', (new moodle_url('/my/'))->out(false)),
         ];
         if ($enabled('pending')) {
             $overdue = $this->get_overdue_count($user, $stats);
@@ -323,60 +324,79 @@ class mydata implements renderable, templatable {
             }
         }
 
+        // No core page lists "completed activities" → no default link.
         $values['completed'] = [
             'value' => $stats['activitiescompleted'],
             'label' => get_string('completed_activities', 'block_mydata'),
-            'url'   => (new moodle_url('/my/courses.php'))->out(false),
+            'url'   => $this->get_card_url('completed', ''),
         ];
 
         $values['courses'] = [
             'value' => $stats['coursescompleted'],
             'sub'   => $stats['coursesenrolled'],
             'label' => get_string('completed_courses', 'block_mydata'),
-            'url'   => (new moodle_url('/my/courses.php'))->out(false),
+            'url'   => $this->get_card_url('courses', (new moodle_url('/my/courses.php'))->out(false)),
         ];
 
         $values['messages'] = [
             'value' => $enabled('messages') ? core_message\api::count_unread_conversations($user) : 0,
             'label' => get_string('unread_messages', 'block_mydata'),
-            'url'   => (new moodle_url('/message/index.php'))->out(false),
+            'url'   => $this->get_card_url('messages', (new moodle_url('/message/index.php'))->out(false)),
         ];
 
         $values['badges'] = [
             'value' => $enabled('badges') ? count(badges_get_user_badges($user->id)) : 0,
             'label' => get_string('badgesreceived', 'block_mydata'),
-            'url'   => (new moodle_url('/badges/mybadges.php'))->out(false),
+            'url'   => $this->get_card_url('badges', (new moodle_url('/badges/mybadges.php'))->out(false)),
         ];
 
+        // Certificates: no universal core page → admin sets it (falls back to
+        // the legacy 'certurl' setting for backward compatibility).
         $certurl = get_config('block_mydata', 'certurl');
         $values['certificates'] = [
             'value' => $enabled('certificates') ? $this->get_certificates_received_count($user->id) : 0,
             'label' => get_string('certificatesreceived', 'block_mydata'),
-            'url'   => !empty($certurl) ? $certurl : '',
+            'url'   => $this->get_card_url('certificates', !empty($certurl) ? $certurl : ''),
         ];
 
         $values['streak'] = [
             'value' => $enabled('streak') ? get_string('streak_value', 'block_mydata', $this->get_login_streak($user->id)) : 0,
             'label' => get_string('streak_label', 'block_mydata'),
-            'url'   => '',
+            'url'   => $this->get_card_url('streak', ''),
             'isnew' => true,
         ];
 
         $values['forums'] = [
             'value' => $enabled('forums') ? $this->get_forum_posts_count($user->id) : 0,
             'label' => get_string('forums_label', 'block_mydata'),
-            'url'   => '',
+            'url'   => $this->get_card_url('forums', ''),
             'isnew' => true,
         ];
 
         $values['timeonline'] = [
             'value' => $enabled('timeonline') ? get_string('timeonline_value', 'block_mydata', $this->get_time_online_hours($user->id)) : 0,
             'label' => get_string('timeonline_label', 'block_mydata'),
-            'url'   => '',
+            'url'   => $this->get_card_url('timeonline', ''),
             'isnew' => true,
         ];
 
         return $values;
+    }
+
+    /**
+     * Resolve a card's link: the admin-configured URL if set, otherwise the
+     * built-in default. The override is validated as PARAM_URL on save.
+     *
+     * @param string $id card id
+     * @param string $default fallback URL ('' = no link)
+     * @return string
+     */
+    protected function get_card_url($id, $default) {
+        $val = get_config('block_mydata', 'url_' . $id);
+        if (!empty($val)) {
+            return $val;
+        }
+        return $default;
     }
 
     // ------------------------------------------------------------------
