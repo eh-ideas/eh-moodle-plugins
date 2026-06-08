@@ -1,0 +1,145 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template block_mydata/mydata
+
+    Renders the v2 user dashboard: profile header, optional progress bar,
+    main + secondary cards (data-driven from the card registry) and an
+    optional upcoming-deadlines section.
+
+    Example context (JSON):
+    {
+        "userfullname": "David Youssef",
+        "userfirstname": "David",
+        "user_initials": "DY",
+        "usercountry": "Argentina",
+        "useremail": "david@example.com",
+        "position": "Director",
+        "showprogress": true,
+        "progresspct": 65,
+        "hasmaincards": true,
+        "maincards": [],
+        "hassecondarycards": true,
+        "secondarycards": [],
+        "showdeadlines": true,
+        "hasdeadlines": false,
+        "deadlines": []
+    }
+}}
+<div class="block_mydata-v2">
+
+    {{! Profile header }}
+    <div class="bm-header">
+        {{#userpicture_url}}
+            <img src="{{userpicture_url}}" alt="{{userfullname}}" class="bm-avatar-img">
+        {{/userpicture_url}}
+        {{^userpicture_url}}
+            <div class="bm-avatar">{{user_initials}}</div>
+        {{/userpicture_url}}
+        <div class="bm-user-info">
+            <h2 class="bm-welcome">{{#str}}welcomemessage, block_mydata, {{userfirstname}}{{/str}}</h2>
+            <div class="bm-meta">
+                {{#usercountry}}<span><i class="fa-solid fa-location-dot" aria-hidden="true"></i> {{usercountry}}</span>{{/usercountry}}
+                {{#usercity}}<span><i class="fa-solid fa-city" aria-hidden="true"></i> {{usercity}}</span>{{/usercity}}
+                {{#useremail}}<span><i class="fa-solid fa-envelope" aria-hidden="true"></i> {{useremail}}</span>{{/useremail}}
+                {{#position}}<span><i class="fa-solid fa-briefcase" aria-hidden="true"></i> {{position}}</span>{{/position}}
+            </div>
+        </div>
+    </div>
+
+    {{! Global progress bar }}
+    {{#showprogress}}
+    <div class="bm-progress-wrap">
+        <div class="bm-progress-label">
+            <span class="bm-progress-left">
+                {{#str}}progress_label, block_mydata{{/str}}
+                <span class="bm-tooltip" tabindex="0">
+                    <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+                    <span class="bm-tooltip-box">{{#str}}progress_tooltip, block_mydata{{/str}}</span>
+                </span>
+            </span>
+            <strong>{{progresspct}}%</strong>
+        </div>
+        <div class="bm-progress-bar">
+            <div class="bm-progress-fill" style="width: {{progresspct}}%"></div>
+        </div>
+    </div>
+    {{/showprogress}}
+
+    {{! Main cards }}
+    {{#hasmaincards}}
+    <div class="bm-cards-main">
+        {{#maincards}}
+        <a class="bm-card-main bm-card-{{id}} {{#hasurl}}bm-clickable{{/hasurl}}" {{#hasurl}}href="{{url}}"{{/hasurl}}>
+            <span class="bm-card-icon-wrap" style="color: {{iconcolor}}; background-color: {{iconbg}}">
+                <i class="{{icon}}" aria-hidden="true"></i>
+            </span>
+            <span class="bm-card-body">
+                <span class="bm-card-num">{{value}}{{#sub}}<span class="bm-card-sub">/{{sub}}</span>{{/sub}}{{#badge}}<span class="bm-badge">{{badgetext}}</span>{{/badge}}</span>
+                <span class="bm-card-label">{{label}}</span>
+            </span>
+            {{#hasurl}}<i class="fa-solid fa-chevron-right bm-card-arrow" aria-hidden="true"></i>{{/hasurl}}
+        </a>
+        {{/maincards}}
+    </div>
+    {{/hasmaincards}}
+
+    {{! Secondary cards }}
+    {{#hassecondarycards}}
+    <div class="bm-cards-secondary">
+        {{#secondarycards}}
+        <a class="bm-card-sec bm-card-{{id}} {{#hasurl}}bm-clickable{{/hasurl}}" {{#hasurl}}href="{{url}}"{{/hasurl}}>
+            <span class="bm-sec-icon-wrap" style="color: {{iconcolor}}; background-color: {{iconbg}}">
+                <i class="{{icon}} bm-sec-icon" aria-hidden="true"></i>
+            </span>
+            <span class="bm-sec-body">
+                <span class="bm-sec-num">{{value}}</span>
+                <span class="bm-sec-label">{{label}}</span>
+            </span>
+            {{#hasurl}}<i class="fa-solid fa-chevron-right bm-sec-arrow" aria-hidden="true"></i>{{/hasurl}}
+        </a>
+        {{/secondarycards}}
+    </div>
+    {{/hassecondarycards}}
+
+    {{! Upcoming deadlines }}
+    {{#showdeadlines}}
+    <div class="bm-deadlines">
+        <div class="bm-deadlines-title">
+            <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+            {{#str}}deadlines_title, block_mydata{{/str}}
+        </div>
+        {{#hasdeadlines}}
+            {{#deadlines}}
+            <a class="bm-deadline-item {{#hasurl}}bm-clickable{{/hasurl}}" {{#hasurl}}href="{{url}}"{{/hasurl}}>
+                <span class="bm-deadline-dot bm-dot-{{urgency}}"></span>
+                <span class="bm-deadline-text">
+                    <strong>{{{title}}}</strong>
+                    {{#course}}<span class="bm-deadline-course">{{{course}}}</span>{{/course}}
+                </span>
+                <span class="bm-deadline-when bm-when-{{urgency}}">{{when}}</span>
+                {{#hasurl}}<i class="fa-solid fa-chevron-right bm-deadline-arrow" aria-hidden="true"></i>{{/hasurl}}
+            </a>
+            {{/deadlines}}
+        {{/hasdeadlines}}
+        {{^hasdeadlines}}
+            <div class="bm-deadlines-empty">{{#str}}deadlines_empty, block_mydata{{/str}}</div>
+        {{/hasdeadlines}}
+    </div>
+    {{/showdeadlines}}
+
+</div>

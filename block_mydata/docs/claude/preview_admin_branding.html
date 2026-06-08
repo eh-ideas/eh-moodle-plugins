@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Preview — Panel de administración (cuadro por recurso)</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#f4f6f9;padding:2rem;max-width:1000px;margin:0 auto;color:#1e293b;}
+  .lbl{font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#94a3b8;margin:1.6rem 0 .6rem;}
+  .fake-setting{background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:12px 16px;margin:8px 0;font-size:13px;color:#475569;}
+  .fake-setting b{color:#1e293b;}
+  /* grid (réplica del CSS real) */
+  .bm-admin-grid{display:flex;flex-wrap:wrap;gap:14px;margin:8px 0 6px;}
+  .bm-admin-grid .bm-admin-card{flex:1 1 270px;}
+  .bm-num-wrap{display:flex;align-items:center;gap:7px;}
+  .bm-num-wrap .bm-suffix{font-size:12px;color:#94a3b8;}
+  input.bm-num{width:96px;padding:7px 10px;border:1px solid #cbd5e1;border-radius:7px;font-size:13px;}
+  .bm-admin-card{border:1px solid #e2e8f0;border-radius:12px;background:#fff;padding:15px 16px;box-shadow:0 1px 3px rgba(20,42,77,.05);transition:box-shadow .15s,border-color .15s;}
+  .bm-admin-card:hover{box-shadow:0 4px 14px rgba(20,42,77,.09);border-color:#cfd9e6;}
+  .bm-admin-card-head{display:flex;align-items:flex-start;gap:12px;}
+  .bm-admin-ic{width:42px;height:42px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;}
+  .bm-admin-titles{flex:1;min-width:0;}
+  .bm-admin-zone{font-size:9.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a3b0c2;margin-bottom:1px;}
+  .bm-admin-card-head h4{font-size:14px;font-weight:700;margin:0;color:#1e293b;line-height:1.25;}
+  .bm-admin-card-head p{font-size:11.5px;color:#94a3b8;margin:3px 0 0;line-height:1.35;}
+  .bm-switch{position:relative;display:inline-block;width:42px;height:24px;flex-shrink:0;cursor:pointer;margin:0;}
+  .bm-switch input{opacity:0;width:0;height:0;position:absolute;}
+  .bm-switch span{position:absolute;inset:0;background:#cbd5e1;border-radius:999px;transition:.2s;}
+  .bm-switch span:before{content:"";position:absolute;width:18px;height:18px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s;box-shadow:0 1px 2px rgba(0,0,0,.2);}
+  .bm-switch input:checked+span{background:#2563eb;}
+  .bm-switch input:checked+span:before{transform:translateX(18px);}
+  .bm-admin-card-body{margin-top:13px;padding-top:13px;border-top:1px dashed #e8edf3;display:flex;flex-wrap:wrap;gap:12px;}
+  .bm-admin-field{display:flex;flex-direction:column;gap:5px;}
+  .bm-admin-field-full{width:100%;}
+  .bm-admin-field label{font-size:11.5px;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:.03em;}
+  .bm-color-wrap{display:flex;align-items:center;gap:8px;}
+  input.bm-color{width:44px;height:30px;border:1px solid #cbd5e1;border-radius:7px;padding:2px;background:#fff;cursor:pointer;}
+  .bm-color-wrap code{font-size:12px;color:#64748b;}
+  input.bm-text{width:100%;padding:7px 10px;border:1px solid #cbd5e1;border-radius:7px;font-size:13px;}
+  .bm-admin-field-full small{font-size:11px;color:#94a3b8;line-height:1.3;}
+</style>
+</head>
+<body>
+
+<div class="lbl">Encabezado de marca</div>
+<div style="display:flex;align-items:center;gap:20px;background:linear-gradient(135deg,#142a4d 0%,#1f4f8f 100%);color:#fff;padding:20px 24px;border-radius:14px;margin:4px 0 20px;box-shadow:0 6px 22px rgba(20,42,77,.25);">
+  <div style="font-size:26px;font-weight:800;letter-spacing:-.5px;line-height:1;flex-shrink:0;">eh<span style="color:#4da3ff;">!</span> ideas</div>
+  <div style="flex:1;border-left:1px solid rgba(255,255,255,.22);padding-left:20px;">
+    <div style="font-size:17px;font-weight:700;">Mi Panel <span style="opacity:.6;font-weight:500;">· block_mydata</span></div>
+    <div style="font-size:13px;opacity:.82;margin-top:3px;">Panel personal del estudiante con sus estadísticas de aprendizaje.</div>
+  </div>
+  <div style="font-size:12px;font-weight:700;background:rgba(255,255,255,.16);padding:6px 14px;border-radius:20px;white-space:nowrap;flex-shrink:0;">v2.0.0-dev</div>
+</div>
+
+<div class="lbl">Configuración general — un cuadro por opción</div>
+<div class="bm-admin-grid">
+  <div class="bm-admin-card"><div class="bm-admin-card-head">
+    <span class="bm-admin-ic" style="color:#2563eb;background:rgba(37,99,235,.13);"><i class="fa-solid fa-user"></i></span>
+    <div class="bm-admin-titles"><h4>Mostrar foto de perfil</h4><p>Muestra la foto del usuario (o sus iniciales).</p></div>
+    <label class="bm-switch"><input type="checkbox" checked><span></span></label>
+  </div></div>
+  <div class="bm-admin-card"><div class="bm-admin-card-head">
+    <span class="bm-admin-ic" style="color:#2563eb;background:rgba(37,99,235,.13);"><i class="fa-solid fa-earth-americas"></i></span>
+    <div class="bm-admin-titles"><h4>Mostrar país</h4><p>Muestra el país del usuario.</p></div>
+    <label class="bm-switch"><input type="checkbox" checked><span></span></label>
+  </div></div>
+  <div class="bm-admin-card"><div class="bm-admin-card-head">
+    <span class="bm-admin-ic" style="color:#2563eb;background:rgba(37,99,235,.13);"><i class="fa-solid fa-city"></i></span>
+    <div class="bm-admin-titles"><h4>Mostrar ciudad</h4><p>Muestra la ciudad del usuario.</p></div>
+    <label class="bm-switch"><input type="checkbox"><span></span></label>
+  </div></div>
+  <div class="bm-admin-card"><div class="bm-admin-card-head">
+    <span class="bm-admin-ic" style="color:#2563eb;background:rgba(37,99,235,.13);"><i class="fa-solid fa-envelope"></i></span>
+    <div class="bm-admin-titles"><h4>Mostrar email</h4><p>Muestra la dirección de correo.</p></div>
+    <label class="bm-switch"><input type="checkbox" checked><span></span></label>
+  </div></div>
+  <div class="bm-admin-card"><div class="bm-admin-card-head">
+    <span class="bm-admin-ic" style="color:#2563eb;background:rgba(37,99,235,.13);"><i class="fa-solid fa-briefcase"></i></span>
+    <div class="bm-admin-titles"><h4>Mostrar cargo</h4><p>Muestra el campo «puesto».</p></div>
+    <label class="bm-switch"><input type="checkbox" checked><span></span></label>
+  </div></div>
+  <div class="bm-admin-card"><div class="bm-admin-card-head">
+    <span class="bm-admin-ic" style="color:#0ea5e9;background:rgba(14,165,233,.13);"><i class="fa-solid fa-chart-line"></i></span>
+    <div class="bm-admin-titles"><h4>Barra de progreso</h4><p>Muestra el progreso promedio de los cursos.</p></div>
+    <label class="bm-switch"><input type="checkbox" checked><span></span></label>
+  </div></div>
+</div>
+
+<div class="lbl">Tarjetas de información — un cuadro por recurso</div>
+<div class="bm-admin-grid">
+
+  <!-- pending -->
+  <div class="bm-admin-card">
+    <div class="bm-admin-card-head">
+      <span class="bm-admin-ic" style="color:#ea580c;background:rgba(234,88,12,.13);"><i class="fa-solid fa-clock"></i></span>
+      <div class="bm-admin-titles"><div class="bm-admin-zone">Tarjeta principal</div><h4>Actividades pendientes</h4><p>Tarjeta con el número de actividades sin completar.</p></div>
+      <label class="bm-switch"><input type="checkbox" checked><span></span></label>
+    </div>
+    <div class="bm-admin-card-body">
+      <div class="bm-admin-field"><label>Color de acento</label><span class="bm-color-wrap"><input type="color" class="bm-color" value="#ea580c"><code>#ea580c</code></span></div>
+    </div>
+  </div>
+
+  <!-- completed -->
+  <div class="bm-admin-card">
+    <div class="bm-admin-card-head">
+      <span class="bm-admin-ic" style="color:#16a34a;background:rgba(22,163,74,.13);"><i class="fa-solid fa-circle-check"></i></span>
+      <div class="bm-admin-titles"><div class="bm-admin-zone">Tarjeta principal</div><h4>Actividades completadas</h4><p>Tarjeta con el número de actividades terminadas.</p></div>
+      <label class="bm-switch"><input type="checkbox" checked><span></span></label>
+    </div>
+    <div class="bm-admin-card-body">
+      <div class="bm-admin-field"><label>Color de acento</label><span class="bm-color-wrap"><input type="color" class="bm-color" value="#16a34a"><code>#16a34a</code></span></div>
+    </div>
+  </div>
+
+  <!-- certificates con variable extra -->
+  <div class="bm-admin-card">
+    <div class="bm-admin-card-head">
+      <span class="bm-admin-ic" style="color:#d97706;background:rgba(217,119,6,.13);"><i class="fa-solid fa-file-lines"></i></span>
+      <div class="bm-admin-titles"><div class="bm-admin-zone">Tarjeta secundaria</div><h4>Certificados recibidos</h4><p>Tarjeta con los certificados emitidos (requiere mod_customcert).</p></div>
+      <label class="bm-switch"><input type="checkbox" checked><span></span></label>
+    </div>
+    <div class="bm-admin-card-body">
+      <div class="bm-admin-field"><label>Color de acento</label><span class="bm-color-wrap"><input type="color" class="bm-color" value="#d97706"><code>#d97706</code></span></div>
+      <div class="bm-admin-field bm-admin-field-full"><label>URL de certificados</label><input type="url" class="bm-text" placeholder="https://..." value=""><small>Dirección a la que enlaza la tarjeta. Si se deja vacío, no será clicable.</small></div>
+    </div>
+  </div>
+
+  <!-- streak (off) -->
+  <div class="bm-admin-card">
+    <div class="bm-admin-card-head">
+      <span class="bm-admin-ic" style="color:#0891b2;background:rgba(8,145,178,.13);"><i class="fa-solid fa-fire-flame-curved"></i></span>
+      <div class="bm-admin-titles"><div class="bm-admin-zone">Tarjeta secundaria</div><h4>Días de racha (nuevo)</h4><p>Días consecutivos de actividad en la plataforma.</p></div>
+      <label class="bm-switch"><input type="checkbox"><span></span></label>
+    </div>
+    <div class="bm-admin-card-body">
+      <div class="bm-admin-field"><label>Color de acento</label><span class="bm-color-wrap"><input type="color" class="bm-color" value="#0891b2"><code>#0891b2</code></span></div>
+    </div>
+  </div>
+
+  <!-- forums (off) -->
+  <div class="bm-admin-card">
+    <div class="bm-admin-card-head">
+      <span class="bm-admin-ic" style="color:#059669;background:rgba(5,150,105,.13);"><i class="fa-solid fa-comments"></i></span>
+      <div class="bm-admin-titles"><div class="bm-admin-zone">Tarjeta secundaria</div><h4>Participación en foros (nuevo)</h4><p>Mensajes en foros publicados este mes.</p></div>
+      <label class="bm-switch"><input type="checkbox"><span></span></label>
+    </div>
+    <div class="bm-admin-card-body">
+      <div class="bm-admin-field"><label>Color de acento</label><span class="bm-color-wrap"><input type="color" class="bm-color" value="#059669"><code>#059669</code></span></div>
+    </div>
+  </div>
+
+  <!-- timeonline (off) -->
+  <div class="bm-admin-card">
+    <div class="bm-admin-card-head">
+      <span class="bm-admin-ic" style="color:#6366f1;background:rgba(99,102,241,.13);"><i class="fa-solid fa-hourglass-half"></i></span>
+      <div class="bm-admin-titles"><div class="bm-admin-zone">Tarjeta secundaria</div><h4>Tiempo en la plataforma (nuevo)</h4><p>Estimación de horas de actividad este mes.</p></div>
+      <label class="bm-switch"><input type="checkbox"><span></span></label>
+    </div>
+    <div class="bm-admin-card-body">
+      <div class="bm-admin-field"><label>Color de acento</label><span class="bm-color-wrap"><input type="color" class="bm-color" value="#6366f1"><code>#6366f1</code></span></div>
+    </div>
+  </div>
+
+</div>
+
+<div class="lbl">Próximos vencimientos — cuadro con toggle + campos</div>
+<div class="bm-admin-grid">
+  <div class="bm-admin-card" style="flex:1 1 100%;">
+    <div class="bm-admin-card-head">
+      <span class="bm-admin-ic" style="color:#ef4444;background:rgba(239,68,68,.13);"><i class="fa-solid fa-triangle-exclamation"></i></span>
+      <div class="bm-admin-titles"><h4>Próximos vencimientos</h4><p>Muestra una lista con las actividades próximas a vencer.</p></div>
+      <label class="bm-switch"><input type="checkbox" checked><span></span></label>
+    </div>
+    <div class="bm-admin-card-body">
+      <div class="bm-admin-field"><label>Días de anticipación</label><span class="bm-num-wrap"><input type="number" class="bm-num" value="7"><span class="bm-suffix">días</span></span></div>
+      <div class="bm-admin-field"><label>Cantidad máxima a mostrar</label><span class="bm-num-wrap"><input type="number" class="bm-num" value="3"></span></div>
+    </div>
+  </div>
+</div>
+
+<div class="lbl">Pie de marca</div>
+<div style="text-align:center;margin:20px 0 6px;padding:18px 16px;border-top:1px solid #e2e8f0;color:#7a8aa0;font-size:12px;line-height:1.7;">
+  <div style="font-size:16px;font-weight:800;color:#142a4d;margin-bottom:4px;">eh<span style="color:#2b7fff;">!</span> ideas</div>
+  <div>Desarrollado por eh! ideas Tecnología Educativa</div>
+  <div style="margin-top:4px;">© 2026 eh! ideas Tecnología Educativa. Todos los derechos reservados. · v2.0.0-dev</div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>block_mydata v2 — Preview variante compacta (columna lateral)</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background:#e9edf2; padding:2rem; }
+  .label { font-size:.7rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#94a3b8; margin-bottom:.75rem; text-align:center; }
+  /* Simula la región lateral de Moodle (~290px) */
+  .side-region { width:290px; margin:0 auto; }
+  .block-shell { background:#fff; border:1px solid #e5e7eb; border-radius:10px; overflow:hidden; box-shadow:0 2px 14px rgba(0,0,0,.06); }
+
+  /* === Réplica del CSS real del plugin (clases idénticas) === */
+  .block_mydata-v2 { container-type: inline-size; --bm-border:#edf2f7; --bm-muted:#718096; --bm-text:#1a202c; --bm-hover:#f7f9ff; color:var(--bm-text); }
+  .block_mydata-v2 a, .block_mydata-v2 a:hover { text-decoration:none; color:inherit; }
+
+  .bm-header { display:grid; grid-template-columns:auto 1fr; gap:1.25rem; align-items:center; padding:1.25rem 1rem 1rem; border-bottom:1px solid var(--bm-border); }
+  .bm-avatar, .bm-avatar-img { width:72px; height:72px; border-radius:50%; flex-shrink:0; }
+  .bm-avatar-img { width:72px!important; height:72px!important; max-width:72px!important; object-fit:cover!important; aspect-ratio:1/1; display:block; }
+  .bm-avatar { background:linear-gradient(135deg,#2563eb,#1a4a8a); display:flex; align-items:center; justify-content:center; color:#fff; font-size:1.6rem; font-weight:700; box-shadow:0 3px 10px rgba(37,99,235,.3); }
+  .bm-welcome { font-size:1rem; font-weight:600; margin:0 0 .15rem; }
+  .bm-meta { font-size:.78rem; color:var(--bm-muted); display:flex; flex-wrap:wrap; gap:.6rem; }
+  .bm-meta span { display:flex; align-items:center; gap:.3rem; }
+  .bm-meta i { font-size:.72rem; color:#a0aec0; }
+
+  .bm-progress-wrap { padding:.75rem 1rem 1rem; border-bottom:1px solid var(--bm-border); background:#f8fafc; }
+  .bm-progress-label { display:flex; justify-content:space-between; align-items:center; font-size:.75rem; color:var(--bm-muted); margin-bottom:.4rem; }
+  .bm-progress-left { display:flex; align-items:center; gap:.3rem; }
+  .bm-progress-label strong { color:#2d3748; }
+  .bm-progress-bar { height:7px; background:#e2e8f0; border-radius:99px; overflow:hidden; }
+  .bm-progress-fill { height:100%; background:linear-gradient(90deg,#2563eb,#38bdf8); border-radius:99px; }
+  .bm-tooltip { color:#a0aec0; }
+
+  .bm-cards-main, .bm-cards-secondary { display:grid; border-bottom:1px solid var(--bm-border); }
+  .bm-card-main { padding:1.1rem 1.25rem; display:flex; align-items:center; gap:1rem; border-right:1px solid var(--bm-border); position:relative; }
+  .bm-card-icon-wrap { width:46px; height:46px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:1.15rem; flex-shrink:0; }
+  .bm-card-body { flex:1; min-width:0; display:flex; flex-direction:column; }
+  .bm-card-num { font-size:1.6rem; font-weight:700; line-height:1; }
+  .bm-card-sub { font-size:1rem; font-weight:400; color:#a0aec0; }
+  .bm-card-label { font-size:.72rem; color:var(--bm-muted); margin-top:.2rem; }
+  .bm-badge { font-size:.65rem; font-weight:700; background:#ef4444; color:#fff; padding:.1rem .45rem; border-radius:99px; margin-left:.4rem; vertical-align:middle; white-space:nowrap; }
+  .bm-card-arrow, .bm-sec-arrow { color:#cbd5e0; }
+
+  .bm-card-sec { padding:.85rem .6rem; display:flex; flex-direction:column; align-items:center; text-align:center; gap:.3rem; border-right:1px solid var(--bm-border); position:relative; }
+  .bm-sec-icon { font-size:1.1rem; margin-bottom:.15rem; }
+  .bm-sec-num { font-size:1.1rem; font-weight:700; line-height:1; }
+  .bm-sec-label { font-size:.62rem; color:#a0aec0; line-height:1.2; }
+
+  .bm-deadlines { padding:.9rem 1rem 1rem; }
+  .bm-deadlines-title { font-size:.72rem; font-weight:600; text-transform:uppercase; letter-spacing:.06em; color:#a0aec0; margin-bottom:.6rem; display:flex; align-items:center; gap:.4rem; }
+  .bm-deadlines-title i { color:#ef4444; }
+  .bm-deadlines-empty { font-size:.76rem; color:#a0aec0; padding:.4rem; }
+
+  /* === Reglas compactas (las nuevas) === */
+  @container (max-width: 460px) {
+    .bm-header { padding:1rem; gap:.85rem; }
+    .bm-avatar, .bm-avatar-img { width:54px; height:54px; }
+    .bm-avatar-img { width:54px!important; height:54px!important; max-width:54px!important; }
+    .bm-avatar { font-size:1.2rem; }
+    .bm-welcome { font-size:.92rem; line-height:1.25; }
+    .bm-meta { font-size:.8rem; gap:.25rem .6rem; }
+
+    .bm-cards-main, .bm-cards-secondary { grid-template-columns:1fr; }
+    .bm-card-main, .bm-card-sec { border-right:none; border-bottom:1px solid var(--bm-border); flex-direction:row; align-items:center; text-align:left; gap:.8rem; }
+    .bm-cards-main .bm-card-main:last-child, .bm-cards-secondary .bm-card-sec:last-child { border-bottom:none; }
+
+    .bm-card-main { padding:.75rem 1rem; }
+    .bm-card-icon-wrap { width:40px; height:40px; font-size:1rem; }
+    .bm-card-body { flex:1; flex-direction:row-reverse; align-items:center; gap:.5rem; min-width:0; }
+    .bm-card-num { font-size:1.35rem; white-space:nowrap; }
+    .bm-card-label { flex:1; margin-top:0; font-size:.84rem; color:#4a5568; line-height:1.25; }
+
+    .bm-card-sec { padding:.65rem 1rem; }
+    .bm-sec-icon { margin-bottom:0; width:22px; text-align:center; font-size:1.05rem; flex-shrink:0; }
+    .bm-sec-label { flex:1; font-size:.84rem; color:#4a5568; }
+    .bm-sec-num { margin-left:auto; font-size:1.15rem; }
+    .bm-card-arrow, .bm-sec-arrow { margin-left:.25rem; flex-shrink:0; }
+  }
+</style>
+</head>
+<body>
+
+<div class="label">Variante compacta mejorada — columna lateral (~290px)</div>
+
+<div class="side-region">
+  <div class="block-shell">
+    <div class="block_mydata-v2">
+
+      <div class="bm-header">
+        <div class="bm-avatar">DY</div>
+        <div class="bm-user-info">
+          <h2 class="bm-welcome">¡Hola, Administrador, bienvenido/a!</h2>
+          <div class="bm-meta">
+            <span><i class="fa-solid fa-envelope"></i> david.youssef@ehideas.com</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="bm-progress-wrap">
+        <div class="bm-progress-label">
+          <span class="bm-progress-left">Progreso promedio en tus cursos activos
+            <i class="fa-solid fa-circle-info bm-tooltip"></i></span>
+          <strong>67%</strong>
+        </div>
+        <div class="bm-progress-bar"><div class="bm-progress-fill" style="width:67%"></div></div>
+      </div>
+
+      <div class="bm-cards-main">
+        <a class="bm-card-main">
+          <span class="bm-card-icon-wrap" style="color:#ea580c;background:rgba(234,88,12,.12)"><i class="fa-solid fa-clock"></i></span>
+          <span class="bm-card-body">
+            <span class="bm-card-num">2<span class="bm-badge">1 vencidas</span></span>
+            <span class="bm-card-label">Actividades pendientes</span>
+          </span>
+          <i class="fa-solid fa-chevron-right bm-card-arrow"></i>
+        </a>
+        <a class="bm-card-main">
+          <span class="bm-card-icon-wrap" style="color:#16a34a;background:rgba(22,163,74,.12)"><i class="fa-solid fa-circle-check"></i></span>
+          <span class="bm-card-body">
+            <span class="bm-card-num">2</span>
+            <span class="bm-card-label">Actividades completadas</span>
+          </span>
+          <i class="fa-solid fa-chevron-right bm-card-arrow"></i>
+        </a>
+        <a class="bm-card-main">
+          <span class="bm-card-icon-wrap" style="color:#2563eb;background:rgba(37,99,235,.12)"><i class="fa-solid fa-graduation-cap"></i></span>
+          <span class="bm-card-body">
+            <span class="bm-card-num">1<span class="bm-card-sub">/4</span></span>
+            <span class="bm-card-label">Cursos completados</span>
+          </span>
+          <i class="fa-solid fa-chevron-right bm-card-arrow"></i>
+        </a>
+      </div>
+
+      <div class="bm-cards-secondary">
+        <a class="bm-card-sec">
+          <i class="fa-solid fa-comment-dots bm-sec-icon" style="color:#7c3aed"></i>
+          <span class="bm-sec-num">0</span>
+          <span class="bm-sec-label">Mensajes sin leer</span>
+          <i class="fa-solid fa-chevron-right bm-sec-arrow"></i>
+        </a>
+        <a class="bm-card-sec">
+          <i class="fa-solid fa-award bm-sec-icon" style="color:#db2777"></i>
+          <span class="bm-sec-num">0</span>
+          <span class="bm-sec-label">Insignias</span>
+          <i class="fa-solid fa-chevron-right bm-sec-arrow"></i>
+        </a>
+        <a class="bm-card-sec">
+          <i class="fa-solid fa-file-lines bm-sec-icon" style="color:#d97706"></i>
+          <span class="bm-sec-num">1</span>
+          <span class="bm-sec-label">Certificados</span>
+          <i class="fa-solid fa-chevron-right bm-sec-arrow"></i>
+        </a>
+      </div>
+
+      <div class="bm-deadlines">
+        <div class="bm-deadlines-title"><i class="fa-solid fa-triangle-exclamation"></i> Próximos vencimientos</div>
+        <div class="bm-deadlines-empty">No tienes vencimientos próximos. ¡Buen trabajo!</div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

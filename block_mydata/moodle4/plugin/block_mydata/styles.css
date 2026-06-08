@@ -1,0 +1,558 @@
+/* block_mydata v2 styles — Option A (clean / corporate).
+   All rules are scoped under .block_mydata to avoid leaking into the theme. */
+
+.block_mydata .block_mydata-v2 {
+    container-type: inline-size;
+    --bm-border: #edf2f7;
+    --bm-muted: #718096;
+    --bm-text: #1a202c;
+    --bm-hover: #f7f9ff;
+    color: var(--bm-text);
+    background: #fff;
+    border: 1px solid #eceff4;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.block_mydata .block_mydata-v2 a,
+.block_mydata .block_mydata-v2 a:hover {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* ── Profile header ── */
+.block_mydata .block_mydata-v2 .bm-header {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 1.25rem;
+    align-items: center;
+    padding: 1.25rem 1rem 1rem;
+    border-bottom: 1px solid var(--bm-border);
+}
+
+.block_mydata .block_mydata-v2 .bm-avatar,
+.block_mydata .block_mydata-v2 .bm-avatar-img {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+/* Force the square/circular crop even if the theme injects img rules. */
+.block_mydata .block_mydata-v2 .bm-avatar-img {
+    width: 72px !important;
+    height: 72px !important;
+    max-width: 72px !important;
+    object-fit: cover !important;
+    aspect-ratio: 1 / 1;
+    display: block;
+}
+
+.block_mydata .block_mydata-v2 .bm-avatar {
+    background: linear-gradient(135deg, #2563eb, #1a4a8a);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 1.6rem;
+    font-weight: 700;
+    box-shadow: 0 3px 10px rgba(37, 99, 235, .3);
+}
+
+.block_mydata .block_mydata-v2 .bm-welcome {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--bm-text);
+    margin: 0 0 .25rem;
+}
+
+.block_mydata .block_mydata-v2 .bm-meta {
+    font-size: .85rem;
+    color: var(--bm-muted);
+    display: flex;
+    flex-wrap: wrap;
+    gap: .6rem;
+}
+
+.block_mydata .block_mydata-v2 .bm-meta span {
+    display: flex;
+    align-items: center;
+    gap: .3rem;
+}
+
+.block_mydata .block_mydata-v2 .bm-meta i {
+    font-size: .72rem;
+    color: #a0aec0;
+}
+
+/* ── Progress bar ── */
+.block_mydata .block_mydata-v2 .bm-progress-wrap {
+    padding: .75rem 1rem 1rem;
+    border-bottom: 1px solid var(--bm-border);
+    background: #f8fafc;
+}
+
+.block_mydata .block_mydata-v2 .bm-progress-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: .75rem;
+    color: var(--bm-muted);
+    margin-bottom: .4rem;
+}
+
+.block_mydata .block_mydata-v2 .bm-progress-left {
+    display: flex;
+    align-items: center;
+    gap: .3rem;
+}
+
+.block_mydata .block_mydata-v2 .bm-progress-label strong {
+    color: #2d3748;
+}
+
+.block_mydata .block_mydata-v2 .bm-progress-bar {
+    height: 7px;
+    background: #e2e8f0;
+    border-radius: 99px;
+    overflow: hidden;
+}
+
+.block_mydata .block_mydata-v2 .bm-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #2563eb, #38bdf8);
+    border-radius: 99px;
+}
+
+/* ── Tooltip ── */
+.block_mydata .block_mydata-v2 .bm-tooltip {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    cursor: help;
+    color: #a0aec0;
+}
+
+.block_mydata .block_mydata-v2 .bm-tooltip:hover,
+.block_mydata .block_mydata-v2 .bm-tooltip:focus {
+    color: #2563eb;
+    outline: none;
+}
+
+.block_mydata .block_mydata-v2 .bm-tooltip-box {
+    display: none;
+    position: absolute;
+    bottom: calc(100% + 6px);
+    left: 0;
+    background: #1a202c;
+    color: #e2e8f0;
+    font-size: .72rem;
+    line-height: 1.5;
+    padding: .5rem .75rem;
+    border-radius: 6px;
+    width: 220px;
+    z-index: 100;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, .2);
+}
+
+.block_mydata .block_mydata-v2 .bm-tooltip:hover .bm-tooltip-box,
+.block_mydata .block_mydata-v2 .bm-tooltip:focus .bm-tooltip-box {
+    display: block;
+}
+
+/* ── Main cards ── */
+.block_mydata .block_mydata-v2 .bm-cards-main {
+    display: flex;
+    flex-wrap: wrap;
+    margin-right: -1px;
+}
+
+.block_mydata .block_mydata-v2 .bm-card-main {
+    flex: 1 1 150px;
+    min-width: 0;
+    padding: 1.1rem 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: #fff;
+    border-right: 1px solid var(--bm-border);
+    border-bottom: 1px solid var(--bm-border);
+    transition: background .15s;
+    position: relative;
+}
+
+.block_mydata .block_mydata-v2 .bm-clickable {
+    cursor: pointer;
+}
+
+.block_mydata .block_mydata-v2 .bm-card-main.bm-clickable:hover {
+    background: var(--bm-hover);
+}
+
+.block_mydata .block_mydata-v2 .bm-card-icon-wrap {
+    width: 52px;
+    height: 52px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.35rem;
+    flex-shrink: 0;
+}
+
+.block_mydata .block_mydata-v2 .bm-card-body {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.block_mydata .block_mydata-v2 .bm-card-num {
+    font-size: 2rem;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -.02em;
+    color: var(--bm-text);
+}
+
+.block_mydata .block_mydata-v2 .bm-card-sub {
+    font-size: 1.15rem;
+    font-weight: 400;
+    color: #a0aec0;
+}
+
+.block_mydata .block_mydata-v2 .bm-card-label {
+    font-size: .82rem;
+    color: var(--bm-muted);
+    margin-top: .3rem;
+}
+
+.block_mydata .block_mydata-v2 .bm-badge {
+    font-size: .65rem;
+    font-weight: 700;
+    background: #ef4444;
+    color: #fff;
+    padding: .1rem .45rem;
+    border-radius: 99px;
+    margin-left: .4rem;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+.block_mydata .block_mydata-v2 .bm-card-arrow {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: .7rem;
+    color: #cbd5e0;
+    opacity: 0;
+    transition: opacity .15s;
+}
+
+.block_mydata .block_mydata-v2 .bm-card-main.bm-clickable:hover .bm-card-arrow {
+    opacity: 1;
+    color: #2563eb;
+}
+
+/* ── Secondary cards ── */
+.block_mydata .block_mydata-v2 .bm-cards-secondary {
+    display: flex;
+    flex-wrap: wrap;
+    margin-right: -1px;
+}
+
+.block_mydata .block_mydata-v2 .bm-card-sec {
+    flex: 1 1 140px;
+    min-width: 0;
+    padding: .95rem 1rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    text-align: left;
+    gap: .7rem;
+    background: #fff;
+    border-right: 1px solid var(--bm-border);
+    border-bottom: 1px solid var(--bm-border);
+    transition: background .15s;
+    position: relative;
+}
+
+.block_mydata .block_mydata-v2 .bm-card-sec.bm-clickable:hover {
+    background: var(--bm-hover);
+}
+
+.block_mydata .block_mydata-v2 .bm-sec-icon-wrap {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+
+.block_mydata .block_mydata-v2 .bm-sec-body {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.block_mydata .block_mydata-v2 .bm-sec-num {
+    font-size: 1.35rem;
+    font-weight: 800;
+    letter-spacing: -.02em;
+    color: var(--bm-text);
+    line-height: 1.05;
+}
+
+.block_mydata .block_mydata-v2 .bm-sec-label {
+    font-size: .76rem;
+    color: var(--bm-muted);
+    line-height: 1.2;
+}
+
+.block_mydata .block_mydata-v2 .bm-sec-arrow {
+    position: absolute;
+    top: 50%;
+    right: 8px;
+    transform: translateY(-50%);
+    font-size: .65rem;
+    color: #cbd5e0;
+    opacity: 0;
+    transition: opacity .15s;
+}
+
+.block_mydata .block_mydata-v2 .bm-card-sec.bm-clickable:hover .bm-sec-arrow {
+    opacity: 1;
+    color: #2563eb;
+}
+
+/* ── Deadlines ── */
+.block_mydata .block_mydata-v2 .bm-deadlines {
+    padding: .9rem 1rem 1rem;
+}
+
+.block_mydata .block_mydata-v2 .bm-deadlines-title {
+    font-size: .72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: #a0aec0;
+    margin-bottom: .6rem;
+    display: flex;
+    align-items: center;
+    gap: .4rem;
+}
+
+.block_mydata .block_mydata-v2 .bm-deadlines-title i {
+    color: #ef4444;
+}
+
+.block_mydata .block_mydata-v2 .bm-deadline-item {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    padding: .5rem .4rem;
+    border-bottom: 1px solid #f0f4f8;
+    border-radius: 6px;
+    transition: background .15s;
+}
+
+.block_mydata .block_mydata-v2 .bm-deadline-item:last-child {
+    border-bottom: none;
+}
+
+.block_mydata .block_mydata-v2 .bm-deadline-item.bm-clickable:hover {
+    background: var(--bm-hover);
+}
+
+.block_mydata .block_mydata-v2 .bm-deadline-item.bm-clickable:hover .bm-deadline-text strong {
+    color: #2563eb;
+}
+
+.block_mydata .block_mydata-v2 .bm-deadline-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.block_mydata .block_mydata-v2 .bm-deadline-text {
+    flex: 1;
+    font-size: .78rem;
+    color: #4a5568;
+    min-width: 0;
+}
+
+.block_mydata .block_mydata-v2 .bm-deadline-text strong {
+    color: #2d3748;
+    display: block;
+    font-size: .8rem;
+    transition: color .15s;
+}
+
+.block_mydata .block_mydata-v2 .bm-deadline-course {
+    font-size: .72rem;
+    color: #a0aec0;
+}
+
+.block_mydata .block_mydata-v2 .bm-deadline-when {
+    font-size: .7rem;
+    font-weight: 600;
+    padding: .15rem .55rem;
+    border-radius: 99px;
+    white-space: nowrap;
+}
+
+.block_mydata .block_mydata-v2 .bm-deadline-arrow {
+    font-size: .65rem;
+    color: #cbd5e0;
+    opacity: 0;
+    transition: opacity .15s;
+}
+
+.block_mydata .block_mydata-v2 .bm-deadline-item.bm-clickable:hover .bm-deadline-arrow {
+    opacity: 1;
+    color: #2563eb;
+}
+
+.block_mydata .block_mydata-v2 .bm-deadlines-empty {
+    font-size: .76rem;
+    color: #a0aec0;
+    padding: .4rem .4rem;
+}
+
+/* Urgency colours */
+.block_mydata .block_mydata-v2 .bm-dot-urgent { background: #dc2626; }
+.block_mydata .block_mydata-v2 .bm-dot-soon { background: #ea580c; }
+.block_mydata .block_mydata-v2 .bm-dot-ok { background: #16a34a; }
+.block_mydata .block_mydata-v2 .bm-when-urgent { background: #fef2f2; color: #dc2626; }
+.block_mydata .block_mydata-v2 .bm-when-soon { background: #fff7ed; color: #ea580c; }
+.block_mydata .block_mydata-v2 .bm-when-ok { background: #f0fdf4; color: #16a34a; }
+
+/* ── Compact variant (narrow block columns) ──
+   Container queries switch to a dense, readable single-column list when the
+   block sits in a side region. Cards become rows that use the full width. */
+@container (max-width: 460px) {
+
+    /* Header: smaller avatar, readable name/email. */
+    .block_mydata .block_mydata-v2 .bm-header {
+        padding: 1rem;
+        gap: .85rem;
+    }
+
+    .block_mydata .block_mydata-v2 .bm-avatar,
+    .block_mydata .block_mydata-v2 .bm-avatar-img {
+        width: 54px;
+        height: 54px;
+    }
+
+    .block_mydata .block_mydata-v2 .bm-avatar-img {
+        width: 54px !important;
+        height: 54px !important;
+        max-width: 54px !important;
+    }
+
+    .block_mydata .block_mydata-v2 .bm-avatar {
+        font-size: 1.2rem;
+    }
+
+    .block_mydata .block_mydata-v2 .bm-welcome {
+        font-size: .95rem;
+        line-height: 1.25;
+        margin-bottom: 0;
+    }
+
+    /* In a narrow column the email is hard to read — show just the greeting. */
+    .block_mydata .block_mydata-v2 .bm-meta {
+        display: none;
+    }
+
+    /* One card per row in a narrow column. */
+    .block_mydata .block_mydata-v2 .bm-card-main,
+    .block_mydata .block_mydata-v2 .bm-card-sec {
+        flex: 1 1 100%;
+        flex-direction: row;
+        align-items: center;
+        text-align: left;
+        gap: .8rem;
+    }
+
+    /* Main cards as dense rows: icon | label | number | arrow. */
+    .block_mydata .block_mydata-v2 .bm-card-main {
+        padding: .75rem 1rem;
+    }
+
+    .block_mydata .block_mydata-v2 .bm-card-icon-wrap {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
+    }
+
+    .block_mydata .block_mydata-v2 .bm-card-body {
+        flex: 1;
+        flex-direction: row-reverse;
+        align-items: center;
+        gap: .5rem;
+        min-width: 0;
+    }
+
+    .block_mydata .block_mydata-v2 .bm-card-num {
+        font-size: 1.35rem;
+        white-space: nowrap;
+    }
+
+    .block_mydata .block_mydata-v2 .bm-card-label {
+        flex: 1;
+        margin-top: 0;
+        font-size: .84rem;
+        color: #4a5568;
+        line-height: 1.25;
+    }
+
+    /* Secondary cards as compact rows: icon | label | number | arrow. */
+    .block_mydata .block_mydata-v2 .bm-card-sec {
+        padding: .65rem 1rem;
+    }
+
+    .block_mydata .block_mydata-v2 .bm-sec-icon-wrap {
+        width: 36px;
+        height: 36px;
+        font-size: 1rem;
+    }
+
+    .block_mydata .block_mydata-v2 .bm-sec-body {
+        flex: 1;
+        flex-direction: row-reverse;
+        align-items: center;
+        gap: .5rem;
+    }
+
+    .block_mydata .block_mydata-v2 .bm-sec-label {
+        flex: 1;
+        font-size: .84rem;
+        color: #4a5568;
+    }
+
+    .block_mydata .block_mydata-v2 .bm-sec-num {
+        font-size: 1.2rem;
+        white-space: nowrap;
+    }
+
+    /* Arrows always visible and inline in the narrow layout. */
+    .block_mydata .block_mydata-v2 .bm-card-arrow,
+    .block_mydata .block_mydata-v2 .bm-sec-arrow {
+        opacity: 1;
+        position: static;
+        transform: none;
+        margin-left: .25rem;
+        flex-shrink: 0;
+    }
+
+    /* Deadlines a touch larger for readability. */
+    .block_mydata .block_mydata-v2 .bm-deadline-text strong {
+        font-size: .84rem;
+    }
+}

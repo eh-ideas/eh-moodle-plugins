@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>block_mydata v2 — Opción C · Bento</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #f0ebe3;
+    padding: 2.5rem;
+    min-height: 100vh;
+  }
+
+  /* ── Nav de comparación ── */
+  .nav-compare {
+    display: flex; gap: 0.5rem; justify-content: center; margin-bottom: 2rem;
+    flex-wrap: wrap;
+  }
+  .nav-btn {
+    font-size: 0.75rem; font-weight: 600; padding: 0.4rem 1rem;
+    border-radius: 99px; text-decoration: none;
+    border: 1.5px solid #d4cdc4; color: #8c8279; background: transparent;
+    transition: all 0.15s;
+  }
+  .nav-btn:hover { border-color: #111; color: #111; }
+  .nav-btn.active { background: #111; color: #fff; border-color: #111; }
+
+  /* ── Label ── */
+  .mockup-label {
+    text-align: center; font-size: 0.68rem; font-weight: 700;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: #b0a89e; margin-bottom: 1.25rem;
+  }
+
+  /* ══ BENTO GRID COMPLETO ══ */
+  .bento {
+    display: grid;
+    grid-template-columns: 200px 1fr 1fr 1fr;
+    grid-template-rows: auto auto auto auto;
+    gap: 12px;
+    max-width: 920px;
+    margin: 0 auto;
+  }
+
+  /* Celda base */
+  .cell {
+    border-radius: 20px;
+    padding: 1.4rem;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s cubic-bezier(.34,1.56,.64,1), box-shadow 0.2s;
+  }
+  a.cell, a.cell * { text-decoration: none; }
+  .cell.interactive { cursor: pointer; }
+  .cell.interactive:hover { transform: scale(1.025); box-shadow: 0 12px 32px rgba(0,0,0,0.12); }
+
+  /* ── Celda 1: Perfil ── */
+  .cell-profile {
+    grid-column: 1;
+    grid-row: 1 / 3;
+    background: #111;
+    color: #fff;
+    display: flex; flex-direction: column;
+    align-items: flex-start; justify-content: flex-end;
+    min-height: 280px;
+    background-image: radial-gradient(ellipse at top right, #2d2d4e 0%, #111 60%);
+  }
+  .cell-profile .avatar {
+    width: 52px; height: 52px; border-radius: 50%;
+    background: linear-gradient(135deg, #6366f1, #a78bfa);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem; font-weight: 800; color: white;
+    margin-bottom: 1rem;
+    box-shadow: 0 0 0 3px rgba(99,102,241,0.3);
+  }
+  .cell-profile h2 { font-size: 0.95rem; font-weight: 700; line-height: 1.3; margin-bottom: 0.3rem; }
+  .cell-profile .role { font-size: 0.7rem; color: #6b7280; margin-bottom: 0.5rem; }
+  .cell-profile .location {
+    display: flex; align-items: center; gap: 0.3rem;
+    font-size: 0.68rem; color: #4b5563;
+  }
+  /* Decoración de fondo */
+  .cell-profile::before {
+    content: '';
+    position: absolute; top: -20px; right: -20px;
+    width: 120px; height: 120px; border-radius: 50%;
+    background: rgba(99,102,241,0.08);
+  }
+  .cell-profile::after {
+    content: '';
+    position: absolute; top: 30px; right: 20px;
+    width: 60px; height: 60px; border-radius: 50%;
+    background: rgba(99,102,241,0.05);
+  }
+
+  /* ── Celda 2: Pendientes (featured) ── */
+  .cell-pending {
+    grid-column: 2 / 4;
+    grid-row: 1;
+    background: #ff5c35;
+    color: white;
+    min-height: 130px;
+    display: flex; flex-direction: column; justify-content: space-between;
+  }
+  .cell-pending .big-num {
+    font-size: 4.5rem; font-weight: 900; line-height: 1;
+    letter-spacing: -0.04em;
+    color: white;
+  }
+  .cell-pending .label { font-size: 0.8rem; opacity: 0.8; font-weight: 500; }
+  .cell-pending .warning-pill {
+    display: inline-flex; align-items: center; gap: 0.35rem;
+    background: rgba(0,0,0,0.2); color: rgba(255,255,255,0.9);
+    font-size: 0.65rem; font-weight: 700;
+    padding: 0.25rem 0.7rem; border-radius: 99px;
+    align-self: flex-start;
+  }
+  .cell-pending::before {
+    content: '';
+    position: absolute; bottom: -30px; right: -10px;
+    width: 140px; height: 140px; border-radius: 50%;
+    background: rgba(255,255,255,0.07);
+  }
+
+  /* ── Celda 3: Completadas ── */
+  .cell-completed {
+    grid-column: 4;
+    grid-row: 1;
+    background: #d4f5e2;
+    color: #064e3b;
+    display: flex; flex-direction: column; justify-content: space-between;
+    min-height: 130px;
+  }
+  .cell-completed .big-num { font-size: 3.8rem; font-weight: 900; line-height: 1; letter-spacing: -0.04em; }
+  .cell-completed .label { font-size: 0.76rem; font-weight: 500; opacity: 0.7; }
+  .cell-completed .icon { font-size: 1.1rem; opacity: 0.4; align-self: flex-end; }
+
+  /* ── Celda 4: Progreso (ring) ── */
+  .cell-progress {
+    grid-column: 2;
+    grid-row: 2;
+    background: #fef3c7;
+    color: #78350f;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 0.5rem;
+    text-align: center;
+  }
+  .ring-wrap { position: relative; width: 80px; height: 80px; }
+  .ring-svg { transform: rotate(-90deg); }
+  .ring-bg { fill: none; stroke: rgba(120,53,15,0.12); stroke-width: 7; }
+  .ring-fill {
+    fill: none; stroke: #f59e0b; stroke-width: 7;
+    stroke-linecap: round;
+    stroke-dasharray: 201;
+    stroke-dashoffset: 70; /* 65% */
+    transition: stroke-dashoffset 1s ease;
+  }
+  .ring-label {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem; font-weight: 800; color: #92400e;
+  }
+  .cell-progress .label { font-size: 0.72rem; font-weight: 600; color: #92400e; opacity: 0.7; }
+  .cell-progress .tooltip-wrap { display: inline-flex; align-items: center; gap: 0.25rem; }
+  .tooltip-icon { color: rgba(120,53,15,0.4); font-size: 0.65rem; cursor: help; }
+  .tooltip-box {
+    display: none; position: absolute; bottom: calc(100% + 8px); left: 50%;
+    transform: translateX(-50%);
+    background: #111; color: #e2e8f0;
+    font-size: 0.72rem; line-height: 1.5;
+    padding: 0.55rem 0.8rem; border-radius: 8px;
+    width: 210px; z-index: 100;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    pointer-events: none; text-align: left;
+  }
+  .tooltip-box::after { content:''; position:absolute; top:100%; left:50%; transform:translateX(-50%); border:5px solid transparent; border-top-color:#111; }
+  .tooltip-wrap:hover .tooltip-box { display: block; }
+
+  /* ── Celda 5: Cursos ── */
+  .cell-courses {
+    grid-column: 3 / 5;
+    grid-row: 2;
+    background: #111;
+    color: white;
+    display: flex; align-items: center; gap: 1.5rem;
+  }
+  .cell-courses .fraction {
+    font-size: 3rem; font-weight: 900; letter-spacing: -0.04em; line-height: 1;
+  }
+  .cell-courses .fraction span { color: #4b5563; font-size: 2rem; }
+  .cell-courses .right { flex: 1; }
+  .cell-courses .label { font-size: 0.78rem; color: #9ca3af; margin-bottom: 0.6rem; }
+  .mini-progress-bar { height: 6px; background: #1f2937; border-radius: 99px; overflow: hidden; margin-bottom: 0.3rem; }
+  .mini-progress-fill { height: 100%; background: linear-gradient(90deg, #6366f1, #a78bfa); border-radius: 99px; width: 20%; }
+  .mini-progress-label { font-size: 0.65rem; color: #4b5563; }
+
+  /* ── Fila de píldoras ── */
+  .cell-pills {
+    grid-column: 1 / 5;
+    grid-row: 3;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 10px;
+    background: transparent;
+    padding: 0;
+    border-radius: 0;
+  }
+  /* Las células de esta fila no usan .cell directamente */
+  .pill {
+    border-radius: 16px;
+    padding: 1rem 0.75rem;
+    display: flex; flex-direction: column;
+    align-items: center; text-align: center; gap: 0.35rem;
+    transition: transform 0.2s cubic-bezier(.34,1.56,.64,1), box-shadow 0.2s;
+    text-decoration: none;
+    position: relative; overflow: hidden;
+  }
+  .pill.interactive:hover { transform: scale(1.045); box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
+  .pill i { font-size: 1.15rem; }
+  .pill .num { font-size: 1.3rem; font-weight: 800; line-height: 1; letter-spacing: -0.02em; }
+  .pill .lbl { font-size: 0.6rem; font-weight: 600; line-height: 1.3; }
+  .pill-msg  { background: #e0e7ff; color: #3730a3; }
+  .pill-bdg  { background: #fce7f3; color: #9d174d; }
+  .pill-cert { background: #fff7ed; color: #9a3412; }
+  .pill-str  { background: #fef9c3; color: #713f12; }
+  .pill-for  { background: #dcfce7; color: #14532d; }
+  .pill-time { background: #e0f2fe; color: #075985; }
+  .pill-new {
+    font-size: 0.48rem; font-weight: 700; text-transform: uppercase;
+    background: currentColor; color: white;
+    opacity: 0; /* se pone sobre el color actual con blend */
+    padding: 0.1rem 0.3rem; border-radius: 3px;
+    position: absolute; top: 7px; right: 7px;
+    background: rgba(0,0,0,0.12); color: inherit;
+    opacity: 0.6;
+    letter-spacing: 0.05em;
+  }
+
+  /* ── Celda de vencimientos ── */
+  .cell-deadlines {
+    grid-column: 1 / 5;
+    grid-row: 4;
+    background: #fff;
+    padding: 0;
+    overflow: hidden;
+  }
+  .dl-header {
+    padding: 1rem 1.4rem 0.7rem;
+    display: flex; align-items: center; gap: 0.5rem;
+    border-bottom: 1px solid #f3f4f6;
+  }
+  .dl-header-text { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #9ca3af; flex: 1; }
+  .dl-new-badge {
+    font-size: 0.55rem; font-weight: 700; text-transform: uppercase;
+    background: #f0fdf4; color: #15803d;
+    border: 1px solid #bbf7d0;
+    padding: 0.1rem 0.4rem; border-radius: 4px; letter-spacing: 0.04em;
+  }
+  .dl-rows { display: grid; grid-template-columns: repeat(3, 1fr); }
+  .dl-item {
+    padding: 1rem 1.4rem;
+    border-right: 1px solid #f3f4f6;
+    display: flex; flex-direction: column; gap: 0.4rem;
+    text-decoration: none; color: inherit;
+    transition: background 0.15s;
+    position: relative;
+  }
+  .dl-item:last-child { border-right: none; }
+  .dl-item:hover { background: #fafafa; }
+  .dl-item:hover .dl-title { color: #6366f1; }
+  .dl-urgency {
+    display: flex; align-items: center; gap: 0.4rem;
+  }
+  .dl-dot {
+    width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+  }
+  .dl-when { font-size: 0.7rem; font-weight: 700; }
+  .dl-title { font-size: 0.82rem; font-weight: 600; color: #111; transition: color 0.15s; line-height: 1.3; }
+  .dl-course { font-size: 0.7rem; color: #9ca3af; margin-top: 0.1rem; }
+  .dl-arrow { position: absolute; right: 1.1rem; top: 50%; transform: translateY(-50%); font-size: 0.65rem; color: #e5e7eb; transition: color 0.15s, transform 0.15s; }
+  .dl-item:hover .dl-arrow { color: #6366f1; transform: translateY(-50%) translateX(2px); }
+  .urg-red   { background: #ef4444; }
+  .urg-ora   { background: #f97316; }
+  .urg-grn   { background: #22c55e; }
+  .when-red  { color: #ef4444; }
+  .when-ora  { color: #f97316; }
+  .when-grn  { color: #22c55e; }
+
+  /* ══ VARIANTE COMPACTA ══ */
+  .compact-section { margin-top: 3rem; }
+  .compact-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+  .c-cell {
+    border-radius: 16px;
+    padding: 1rem 1.1rem;
+    position: relative; overflow: hidden;
+    transition: transform 0.2s cubic-bezier(.34,1.56,.64,1);
+    text-decoration: none; color: inherit;
+  }
+  .c-cell.interactive:hover { transform: scale(1.035); }
+  .c-cell .c-num { font-size: 2rem; font-weight: 900; line-height: 1; letter-spacing: -0.03em; }
+  .c-cell .c-lbl { font-size: 0.68rem; font-weight: 500; opacity: 0.65; margin-top: 0.25rem; }
+  .c-cell .c-icon { font-size: 0.9rem; margin-bottom: 0.4rem; opacity: 0.6; }
+
+  .cc-profile {
+    grid-column: 1 / 3;
+    background: #111;
+    color: white;
+    display: flex; align-items: center; gap: 0.85rem;
+    padding: 0.9rem 1.1rem;
+  }
+  .cc-avatar {
+    width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0;
+    background: linear-gradient(135deg, #6366f1, #a78bfa);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.9rem; font-weight: 800; color: white;
+  }
+  .cc-profile h3 { font-size: 0.85rem; font-weight: 700; color: white; }
+  .cc-profile p { font-size: 0.68rem; color: #4b5563; }
+  .cc-progress-wrap { flex: 1; }
+  .cc-progress-bar-row {
+    display: flex; align-items: center; gap: 0.5rem; margin-top: 0.35rem;
+  }
+  .cc-bar { flex: 1; height: 4px; background: #1f2937; border-radius: 99px; overflow: hidden; }
+  .cc-bar-fill { height: 100%; background: linear-gradient(90deg, #6366f1, #a78bfa); border-radius: 99px; }
+  .cc-pct { font-size: 0.72rem; font-weight: 700; color: #a5b4fc; }
+
+  .cc-pending  { background: #ff5c35; color: white; }
+  .cc-done     { background: #d4f5e2; color: #064e3b; }
+  .cc-courses  { grid-column: 1 / 3; background: #111; color: white; display:flex; align-items:center; gap:1rem; }
+  .cc-courses .c-num { font-size: 1.6rem; }
+  .cc-courses .c-num span { font-size: 1rem; color: #374151; }
+  .cc-courses .c-lbl { opacity: 0.45; font-size: 0.66rem; }
+  .cc-mini-bar { flex: 1; }
+  .cc-mini-bar-track { height: 4px; background: #1f2937; border-radius: 99px; overflow: hidden; margin-top: 0.5rem; }
+  .cc-mini-bar-fill { height: 100%; background: linear-gradient(90deg, #6366f1, #a78bfa); width: 20%; border-radius: 99px; }
+
+  .cc-msgs  { background: #e0e7ff; color: #3730a3; }
+  .cc-bdgs  { background: #fce7f3; color: #9d174d; }
+  .cc-certs { background: #fff7ed; color: #9a3412; }
+  .cc-str   { background: #fef9c3; color: #713f12; }
+
+  .cc-deadlines {
+    grid-column: 1 / 3;
+    background: #fff;
+    border-radius: 16px;
+    overflow: hidden;
+    padding: 0.85rem 1.1rem;
+  }
+  .cc-dl-title { font-size: 0.62rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #d1d5db; margin-bottom: 0.55rem; }
+  .cc-dl-row {
+    display: flex; align-items: center; gap: 0.55rem;
+    padding: 0.3rem 0;
+    text-decoration: none; color: inherit;
+    border-radius: 6px;
+    padding-left: 0.25rem;
+    transition: background 0.12s;
+  }
+  .cc-dl-row:hover { background: #f9fafb; }
+  .cc-dl-row:hover .cc-dl-name { color: #6366f1; }
+  .cc-dl-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+  .cc-dl-name { flex: 1; font-size: 0.72rem; color: #374151; transition: color 0.15s; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .cc-dl-when { font-size: 0.67rem; font-weight: 700; white-space: nowrap; }
+
+  /* Nota */
+  .note {
+    max-width: 920px; margin: 2rem auto 0;
+    background: #fff; border-radius: 14px;
+    padding: 1rem 1.25rem;
+    font-size: 0.78rem; color: #9ca3af;
+    border: 1px solid #e5e7eb;
+  }
+  .note strong { color: #374151; }
+  .note ul { padding-left: 1.1rem; margin-top: 0.4rem; }
+  .note li { margin-bottom: 0.25rem; }
+</style>
+</head>
+<body>
+
+<div class="nav-compare">
+  <a href="mockup_v2.html" class="nav-btn">Opción A — Claro</a>
+  <a href="mockup_v2_alt.html" class="nav-btn">Opción B — Oscuro</a>
+  <span class="nav-btn active">Opción C — Bento ← esta</span>
+</div>
+
+<div class="mockup-label">Variante completa — Layout Bento asimétrico</div>
+
+<!-- ══ BENTO GRID ══ -->
+<div class="bento">
+
+  <!-- Perfil -->
+  <div class="cell cell-profile">
+    <div class="avatar">DY</div>
+    <div>
+      <h2>David Youssef</h2>
+      <div class="role">Director de Tecnología</div>
+      <div class="location"><i class="fa-solid fa-location-dot" style="font-size:0.65rem;color:#4b5563;"></i> Argentina</div>
+    </div>
+  </div>
+
+  <!-- Pendientes — featured -->
+  <a href="#actividades-pendientes" class="cell cell-pending interactive">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+      <div class="warning-pill"><i class="fa-solid fa-triangle-exclamation" style="font-size:0.6rem;"></i> 3 vencidas hoy</div>
+      <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.75rem;opacity:0.4;"></i>
+    </div>
+    <div class="big-num">16</div>
+    <div class="label">Actividades pendientes</div>
+  </a>
+
+  <!-- Completadas -->
+  <a href="#actividades-completadas" class="cell cell-completed interactive">
+    <i class="fa-solid fa-circle-check icon" style="font-size:1.1rem;opacity:0.35;align-self:flex-end;position:absolute;top:1.2rem;right:1.2rem;"></i>
+    <div class="big-num">12</div>
+    <div style="flex:1;"></div>
+    <div class="label">Completadas</div>
+  </a>
+
+  <!-- Progreso ring -->
+  <div class="cell cell-progress">
+    <div class="ring-wrap">
+      <svg class="ring-svg" width="80" height="80" viewBox="0 0 80 80">
+        <circle class="ring-bg" cx="40" cy="40" r="32"/>
+        <circle class="ring-fill" cx="40" cy="40" r="32"/>
+      </svg>
+      <div class="ring-label">65%</div>
+    </div>
+    <div class="label">
+      <span class="tooltip-wrap" style="position:relative;">
+        Progreso promedio
+        <i class="fa-solid fa-circle-info tooltip-icon" style="margin-left:0.25rem;"></i>
+        <div class="tooltip-box">Promedio del porcentaje de completitud en todos tus cursos activos. Solo considera actividades con seguimiento de finalización habilitado.</div>
+      </span>
+    </div>
+  </div>
+
+  <!-- Cursos -->
+  <a href="#mis-cursos" class="cell cell-courses interactive">
+    <div class="fraction">2<span>/10</span></div>
+    <div class="right">
+      <div class="label">Cursos completados</div>
+      <div class="mini-progress-bar"><div class="mini-progress-fill"></div></div>
+      <div class="mini-progress-label">20% del total</div>
+    </div>
+    <i class="fa-solid fa-arrow-up-right-from-square" style="position:absolute;top:1.1rem;right:1.1rem;font-size:0.7rem;color:#374151;"></i>
+  </a>
+
+  <!-- Fila de píldoras -->
+  <div class="cell-pills">
+
+    <a href="#mensajes" class="pill pill-msg interactive">
+      <i class="fa-regular fa-comment-dots"></i>
+      <div class="num">0</div>
+      <div class="lbl">Mensajes</div>
+    </a>
+
+    <a href="#insignias" class="pill pill-bdg interactive">
+      <i class="fa-solid fa-award"></i>
+      <div class="num">1</div>
+      <div class="lbl">Insignias</div>
+    </a>
+
+    <a href="#certificados" class="pill pill-cert interactive">
+      <i class="fa-regular fa-file-lines"></i>
+      <div class="num">28</div>
+      <div class="lbl">Certificados</div>
+    </a>
+
+    <div class="pill pill-str">
+      <span class="pill-new">nuevo</span>
+      <i class="fa-solid fa-fire-flame-curved"></i>
+      <div class="num">7</div>
+      <div class="lbl">Días racha</div>
+    </div>
+
+    <div class="pill pill-for">
+      <span class="pill-new">nuevo</span>
+      <i class="fa-regular fa-comments"></i>
+      <div class="num">5</div>
+      <div class="lbl">Posts foros</div>
+    </div>
+
+    <div class="pill pill-time">
+      <span class="pill-new">nuevo</span>
+      <i class="fa-regular fa-clock"></i>
+      <div class="num">14h</div>
+      <div class="lbl">Este mes</div>
+    </div>
+
+  </div>
+
+  <!-- Vencimientos en 3 columnas -->
+  <div class="cell cell-deadlines">
+    <div class="dl-header">
+      <i class="fa-solid fa-triangle-exclamation" style="font-size:0.7rem;color:#ef4444;"></i>
+      <span class="dl-header-text">Próximos vencimientos</span>
+      <span class="dl-new-badge">nuevo</span>
+    </div>
+    <div class="dl-rows">
+      <a href="#evaluacion-final-m3" class="dl-item">
+        <div class="dl-urgency">
+          <div class="dl-dot urg-red"></div>
+          <span class="dl-when when-red">Vence en 1 día</span>
+        </div>
+        <div class="dl-title">Evaluación Final — Módulo 3</div>
+        <div class="dl-course">Gestión de Proyectos</div>
+        <i class="fa-solid fa-chevron-right dl-arrow"></i>
+      </a>
+      <a href="#tarea-informe" class="dl-item">
+        <div class="dl-urgency">
+          <div class="dl-dot urg-ora"></div>
+          <span class="dl-when when-ora">Vence en 4 días</span>
+        </div>
+        <div class="dl-title">Tarea: Informe de avance</div>
+        <div class="dl-course">Liderazgo Efectivo</div>
+        <i class="fa-solid fa-chevron-right dl-arrow"></i>
+      </a>
+      <a href="#quiz-u5" class="dl-item">
+        <div class="dl-urgency">
+          <div class="dl-dot urg-grn"></div>
+          <span class="dl-when when-grn">Vence en 6 días</span>
+        </div>
+        <div class="dl-title">Quiz: Unidad 5</div>
+        <div class="dl-course">Excel Avanzado</div>
+        <i class="fa-solid fa-chevron-right dl-arrow"></i>
+      </a>
+    </div>
+  </div>
+
+</div><!-- /bento -->
+
+
+<!-- VARIANTE COMPACTA -->
+<div class="compact-section">
+  <div class="mockup-label">Variante compacta — Columna lateral</div>
+
+  <div class="compact-grid">
+
+    <div class="c-cell cc-profile">
+      <div class="cc-avatar">DY</div>
+      <div class="cc-progress-wrap">
+        <h3>David Youssef</h3>
+        <div class="cc-progress-bar-row">
+          <div class="cc-bar"><div class="cc-bar-fill" style="width:65%"></div></div>
+          <span class="cc-pct">65%</span>
+        </div>
+      </div>
+    </div>
+
+    <a href="#actividades-pendientes" class="c-cell cc-pending interactive">
+      <i class="fa-regular fa-clock c-icon"></i>
+      <div class="c-num">16</div>
+      <div class="c-lbl">Pendientes</div>
+    </a>
+
+    <a href="#actividades-completadas" class="c-cell cc-done interactive">
+      <i class="fa-solid fa-circle-check c-icon"></i>
+      <div class="c-num">12</div>
+      <div class="c-lbl">Completadas</div>
+    </a>
+
+    <a href="#mis-cursos" class="c-cell cc-courses interactive">
+      <div>
+        <div class="c-num">2<span>/10</span></div>
+        <div class="c-lbl">Cursos completados</div>
+      </div>
+      <div class="cc-mini-bar">
+        <div class="cc-mini-bar-track"><div class="cc-mini-bar-fill"></div></div>
+      </div>
+    </a>
+
+    <a href="#mensajes" class="c-cell cc-msgs interactive">
+      <i class="fa-regular fa-comment-dots c-icon"></i>
+      <div class="c-num">0</div>
+      <div class="c-lbl">Mensajes</div>
+    </a>
+
+    <a href="#insignias" class="c-cell cc-bdgs interactive">
+      <i class="fa-solid fa-award c-icon"></i>
+      <div class="c-num">1</div>
+      <div class="c-lbl">Insignias</div>
+    </a>
+
+    <a href="#certificados" class="c-cell cc-certs interactive">
+      <i class="fa-regular fa-file-lines c-icon"></i>
+      <div class="c-num">28</div>
+      <div class="c-lbl">Certificados</div>
+    </a>
+
+    <div class="c-cell cc-str">
+      <i class="fa-solid fa-fire-flame-curved c-icon"></i>
+      <div class="c-num">7</div>
+      <div class="c-lbl">Días racha</div>
+    </div>
+
+    <div class="cc-deadlines" style="grid-column:1/3;">
+      <div class="cc-dl-title">Próximos vencimientos</div>
+      <a href="#evaluacion-final-m3" class="cc-dl-row">
+        <div class="cc-dl-dot" style="background:#ef4444;"></div>
+        <span class="cc-dl-name">Evaluación Final — M3</span>
+        <span class="cc-dl-when" style="color:#ef4444;">1 día</span>
+      </a>
+      <a href="#tarea-informe" class="cc-dl-row">
+        <div class="cc-dl-dot" style="background:#f97316;"></div>
+        <span class="cc-dl-name">Informe de avance</span>
+        <span class="cc-dl-when" style="color:#f97316;">4 días</span>
+      </a>
+      <a href="#quiz-u5" class="cc-dl-row">
+        <div class="cc-dl-dot" style="background:#22c55e;"></div>
+        <span class="cc-dl-name">Quiz: Unidad 5</span>
+        <span class="cc-dl-when" style="color:#22c55e;">6 días</span>
+      </a>
+    </div>
+
+  </div>
+</div>
+
+
+<div class="note">
+  <strong>Opción C — Bento grid asimétrico.</strong> Lo que cambia radicalmente respecto a A y B:
+  <ul>
+    <li>Layout <strong>no uniforme</strong>: cada celda tiene su propio peso visual según la importancia del dato</li>
+    <li>Tarjeta de pendientes como <strong>hero prominente</strong> en coral/rojo — llama la atención por ser la métrica más accionable</li>
+    <li>El progreso usa un <strong>anillo SVG animado</strong> en vez de barra horizontal</li>
+    <li>Fondo cálido crema <code>#f0ebe3</code> que contrasta con las celdas blancas y negras</li>
+    <li>Los vencimientos se despliegan en <strong>3 columnas horizontales</strong>, no en lista vertical</li>
+    <li>Fuerte uso de <strong>números grandes</strong> como elemento gráfico principal</li>
+  </ul>
+</div>
+
+</body>
+</html>

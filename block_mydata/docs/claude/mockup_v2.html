@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>block_mydata v2 — Maqueta visual</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: #f0f2f5;
+    color: #2d3748;
+    padding: 2rem;
+  }
+
+  .mockup-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #a0aec0;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .mockup-label::before, .mockup-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: #e2e8f0;
+  }
+  .section-wrap { margin-bottom: 3rem; }
+
+  .moodle-chrome {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    overflow: hidden;
+    max-width: 960px;
+    margin: 0 auto;
+  }
+  .moodle-topbar {
+    background: #1a4a8a;
+    padding: 0.6rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    font-size: 0.82rem;
+    color: rgba(255,255,255,0.85);
+  }
+  .moodle-topbar strong { color: #fff; font-size: 1rem; }
+  .moodle-topbar .spacer { flex: 1; }
+  .moodle-topbar .user-pill {
+    display: flex; align-items: center; gap: 0.5rem;
+    background: rgba(255,255,255,0.12);
+    padding: 0.3rem 0.75rem;
+    border-radius: 20px;
+  }
+  .moodle-page-header {
+    background: linear-gradient(135deg, #1a4a8a 0%, #2563eb 100%);
+    padding: 1.5rem 2rem 2.5rem;
+    color: white;
+  }
+  .moodle-page-header h1 { font-size: 1.4rem; font-weight: 600; opacity: 0.95; }
+  .moodle-content { padding: 1.5rem; background: #f8fafc; }
+
+  /* ── Tooltip ── */
+  .tooltip-wrap {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+  }
+  .tooltip-icon {
+    color: #a0aec0;
+    font-size: 0.7rem;
+    cursor: help;
+    margin-left: 0.3rem;
+    transition: color 0.15s;
+  }
+  .tooltip-icon:hover { color: #2563eb; }
+  .tooltip-box {
+    display: none;
+    position: absolute;
+    bottom: calc(100% + 6px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1a202c;
+    color: #e2e8f0;
+    font-size: 0.72rem;
+    line-height: 1.5;
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    width: 210px;
+    z-index: 100;
+    pointer-events: none;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  }
+  .tooltip-box::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: #1a202c;
+  }
+  .tooltip-wrap:hover .tooltip-box { display: block; }
+
+  /* ── Links ── */
+  a.bm-link { text-decoration: none; color: inherit; display: contents; }
+  .clickable {
+    cursor: pointer;
+    position: relative;
+  }
+  .clickable:hover { background: #f0f5ff !important; }
+  .clickable:hover .bm-card-num,
+  .clickable:hover .bm-sec-num,
+  .clickable:hover .bmc-row-num { color: #2563eb; }
+  .click-hint {
+    font-size: 0.6rem;
+    color: #93c5fd;
+    position: absolute;
+    bottom: 5px;
+    right: 8px;
+    opacity: 0;
+    transition: opacity 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 0.2rem;
+  }
+  .clickable:hover .click-hint { opacity: 1; }
+  .no-link { cursor: default; }
+
+  /* ── BLOQUE COMPLETO ── */
+  .block-mydata {
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+    border: 1px solid #e8edf4;
+  }
+
+  .bm-header {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 1.25rem;
+    align-items: center;
+    padding: 1.25rem 1.5rem 1rem;
+    border-bottom: 1px solid #edf2f7;
+  }
+  .bm-avatar {
+    width: 72px; height: 72px; border-radius: 50%;
+    background: linear-gradient(135deg, #2563eb, #1a4a8a);
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-size: 1.6rem; font-weight: 700;
+    flex-shrink: 0;
+    box-shadow: 0 3px 10px rgba(37,99,235,0.3);
+  }
+  .bm-user-info h2 { font-size: 1rem; font-weight: 600; color: #1a202c; margin-bottom: 0.15rem; }
+  .bm-user-info .bm-meta {
+    font-size: 0.78rem; color: #718096;
+    display: flex; flex-wrap: wrap; gap: 0.6rem;
+  }
+  .bm-user-info .bm-meta span { display: flex; align-items: center; gap: 0.3rem; }
+  .bm-user-info .bm-meta i { font-size: 0.7rem; color: #a0aec0; }
+
+  .bm-progress-wrap {
+    padding: 0.75rem 1.5rem 1rem;
+    border-bottom: 1px solid #edf2f7;
+    background: #f8fafc;
+  }
+  .bm-progress-label {
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 0.75rem; color: #718096; margin-bottom: 0.4rem;
+  }
+  .bm-progress-label strong { color: #2d3748; }
+  .bm-progress-label .left { display: flex; align-items: center; gap: 0.25rem; }
+  .bm-progress-bar { height: 7px; background: #e2e8f0; border-radius: 99px; overflow: hidden; }
+  .bm-progress-fill { height: 100%; background: linear-gradient(90deg, #2563eb, #38bdf8); border-radius: 99px; }
+
+  .bm-cards-main {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    border-bottom: 1px solid #edf2f7;
+  }
+  .bm-card-main {
+    padding: 1.1rem 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    border-right: 1px solid #edf2f7;
+    transition: background 0.15s;
+  }
+  .bm-card-main:last-child { border-right: none; }
+  .bm-card-icon-wrap {
+    width: 46px; height: 46px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.15rem; flex-shrink: 0;
+  }
+  .bm-card-main .bm-card-body { flex: 1; min-width: 0; }
+  .bm-card-main .bm-card-num { font-size: 1.6rem; font-weight: 700; line-height: 1; color: #1a202c; }
+  .bm-card-main .bm-card-label { font-size: 0.72rem; color: #718096; margin-top: 0.2rem; }
+  .bm-c1 .bm-card-icon-wrap { background: #fff7ed; color: #ea580c; }
+  .bm-c2 .bm-card-icon-wrap { background: #f0fdf4; color: #16a34a; }
+  .bm-c3 .bm-card-icon-wrap { background: #eff6ff; color: #2563eb; }
+
+  .bm-badge { font-size: 0.65rem; font-weight: 700; background: #ef4444; color: white; padding: 0.1rem 0.45rem; border-radius: 99px; margin-left: 0.4rem; vertical-align: middle; }
+
+  .bm-cards-secondary {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 0;
+    border-bottom: 1px solid #edf2f7;
+  }
+  .bm-card-sec {
+    padding: 0.85rem 0.6rem;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center;
+    border-right: 1px solid #edf2f7;
+    transition: background 0.15s;
+    gap: 0.3rem;
+  }
+  .bm-card-sec:last-child { border-right: none; }
+  .bm-card-sec i { font-size: 1.1rem; margin-bottom: 0.15rem; }
+  .bm-card-sec .bm-sec-num { font-size: 1.1rem; font-weight: 700; color: #1a202c; line-height: 1; }
+  .bm-card-sec .bm-sec-label { font-size: 0.62rem; color: #a0aec0; line-height: 1.2; }
+  .bm-s1 i { color: #7c3aed; }
+  .bm-s2 i { color: #db2777; }
+  .bm-s3 i { color: #d97706; }
+  .bm-s4 i { color: #0891b2; }
+  .bm-s5 i { color: #059669; }
+  .bm-s6 i { color: #6366f1; }
+
+  .bm-deadlines { padding: 0.9rem 1.5rem 1rem; }
+  .bm-deadlines-title {
+    font-size: 0.72rem; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: #a0aec0; margin-bottom: 0.6rem;
+    display: flex; align-items: center; gap: 0.4rem;
+  }
+  .bm-deadlines-title i { color: #ef4444; }
+  .bm-deadline-item {
+    display: flex; align-items: center; gap: 0.75rem;
+    padding: 0.5rem 0.4rem;
+    border-bottom: 1px solid #f0f4f8;
+    border-radius: 6px;
+    transition: background 0.15s;
+    text-decoration: none; color: inherit;
+  }
+  .bm-deadline-item:last-child { border-bottom: none; }
+  .bm-deadline-item.clickable:hover { background: #f0f5ff; }
+  .bm-deadline-item.clickable:hover .bm-deadline-text strong { color: #2563eb; }
+  .bm-deadline-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .bm-deadline-text { flex: 1; font-size: 0.78rem; color: #4a5568; }
+  .bm-deadline-text strong { color: #2d3748; display: block; font-size: 0.8rem; transition: color 0.15s; }
+  .bm-deadline-when { font-size: 0.7rem; font-weight: 600; padding: 0.15rem 0.55rem; border-radius: 99px; white-space: nowrap; }
+  .bm-deadline-arrow { font-size: 0.65rem; color: #a0aec0; opacity: 0; transition: opacity 0.15s; margin-left: 0.25rem; }
+  .bm-deadline-item.clickable:hover .bm-deadline-arrow { opacity: 1; color: #2563eb; }
+  .urgent { background: #fef2f2; color: #dc2626; }
+  .soon   { background: #fff7ed; color: #ea580c; }
+  .ok     { background: #f0fdf4; color: #16a34a; }
+  .dot-urgent { background: #dc2626; }
+  .dot-soon   { background: #ea580c; }
+  .dot-ok     { background: #16a34a; }
+
+  /* ── VARIANTE COMPACTA ── */
+  .compact-wrap { max-width: 280px; }
+  .block-mydata-compact {
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+    border: 1px solid #e8edf4;
+    font-size: 0.85rem;
+  }
+  .bmc-header { padding: 1rem 1rem 0.8rem; display: flex; align-items: center; gap: 0.75rem; border-bottom: 1px solid #edf2f7; }
+  .bmc-avatar {
+    width: 44px; height: 44px; border-radius: 50%; flex-shrink: 0;
+    background: linear-gradient(135deg, #2563eb, #1a4a8a);
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-size: 1rem; font-weight: 700;
+    box-shadow: 0 2px 6px rgba(37,99,235,0.3);
+  }
+  .bmc-user h3 { font-size: 0.85rem; font-weight: 600; color: #1a202c; }
+  .bmc-user p { font-size: 0.72rem; color: #a0aec0; }
+  .bmc-progress { padding: 0.6rem 1rem; background: #f8fafc; border-bottom: 1px solid #edf2f7; }
+  .bmc-progress-top { display: flex; justify-content: space-between; font-size: 0.7rem; color: #718096; margin-bottom: 0.3rem; align-items: center; }
+  .bmc-progress-top strong { color: #1a202c; }
+  .bmc-bar { height: 5px; background: #e2e8f0; border-radius: 99px; overflow: hidden; }
+  .bmc-bar-fill { height: 100%; background: linear-gradient(90deg, #2563eb, #38bdf8); border-radius: 99px; }
+  .bmc-group { border-bottom: 1px solid #edf2f7; }
+  .bmc-group:last-child { border-bottom: none; }
+  .bmc-row {
+    display: flex; align-items: center; gap: 0.75rem;
+    padding: 0.55rem 1rem;
+    transition: background 0.12s;
+    text-decoration: none; color: inherit;
+  }
+  .bmc-row.clickable:hover { background: #f0f5ff; }
+  .bmc-row.clickable:hover .bmc-row-num { color: #2563eb; }
+  .bmc-row i { width: 18px; text-align: center; font-size: 0.85rem; }
+  .bmc-row .bmc-row-num { font-weight: 700; color: #1a202c; margin-left: auto; font-size: 0.88rem; transition: color 0.15s; }
+  .bmc-row .bmc-row-label { flex: 1; color: #4a5568; font-size: 0.76rem; }
+  .bmc-row-arrow { font-size: 0.6rem; color: #a0aec0; opacity: 0; transition: opacity 0.15s; margin-left: 0.2rem; }
+  .bmc-row.clickable:hover .bmc-row-arrow { opacity: 1; color: #2563eb; }
+  .ri-orange { color: #ea580c; }
+  .ri-green  { color: #16a34a; }
+  .ri-blue   { color: #2563eb; }
+  .ri-purple { color: #7c3aed; }
+  .ri-pink   { color: #db2777; }
+  .ri-amber  { color: #d97706; }
+  .ri-teal   { color: #0891b2; }
+  .ri-indigo { color: #6366f1; }
+
+  .mockup-notes {
+    max-width: 960px; margin: 2rem auto 0;
+    background: #fffbeb; border: 1px solid #fde68a;
+    border-radius: 8px; padding: 1rem 1.25rem;
+    font-size: 0.8rem; color: #78350f;
+  }
+  .mockup-notes h4 { font-size: 0.82rem; margin-bottom: 0.5rem; color: #92400e; }
+  .mockup-notes ul { padding-left: 1.2rem; }
+  .mockup-notes li { margin-bottom: 0.3rem; }
+
+  .bm-new-badge {
+    font-size: 0.55rem; font-weight: 700; text-transform: uppercase;
+    background: #dcfce7; color: #15803d;
+    padding: 0.1rem 0.35rem; border-radius: 4px;
+    vertical-align: middle; margin-left: 0.3rem; letter-spacing: 0.04em;
+  }
+  .no-link-badge {
+    font-size: 0.55rem; font-weight: 600;
+    background: #f1f5f9; color: #94a3b8;
+    padding: 0.1rem 0.35rem; border-radius: 4px;
+    vertical-align: middle; margin-left: 0.3rem;
+  }
+</style>
+</head>
+<body>
+
+<!-- VARIANTE COMPLETA -->
+<div class="section-wrap">
+  <div class="mockup-label">Variante completa — Área personal (ancho completo)</div>
+
+  <div class="moodle-chrome">
+    <div class="moodle-topbar">
+      <strong>eh!ideas</strong>
+      <span>Mis Cursos</span><span>Mis Certificados</span><span>Rutas</span>
+      <span class="spacer"></span>
+      <div class="user-pill"><i class="fa-solid fa-circle-user"></i> Administrador</div>
+    </div>
+    <div class="moodle-page-header"><h1>Área personal</h1></div>
+    <div class="moodle-content">
+
+      <div class="block-mydata">
+
+        <!-- Cabecera -->
+        <div class="bm-header">
+          <div class="bm-avatar">DY</div>
+          <div class="bm-user-info">
+            <h2>¡Hola, David, bienvenido/a!</h2>
+            <div class="bm-meta">
+              <span><i class="fa-solid fa-location-dot"></i> Argentina</span>
+              <span><i class="fa-solid fa-envelope"></i> david.youssef@ehideas.com</span>
+              <span><i class="fa-solid fa-briefcase"></i> Director de Tecnología</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Barra de progreso con tooltip -->
+        <div class="bm-progress-wrap">
+          <div class="bm-progress-label">
+            <div class="left">
+              <span>Progreso promedio en tus cursos activos</span>
+              <span class="bm-new-badge">nuevo</span>
+              <span class="tooltip-wrap">
+                <i class="fa-solid fa-circle-info tooltip-icon"></i>
+                <div class="tooltip-box">Promedio del porcentaje de completitud en todos tus cursos activos. Solo considera actividades con seguimiento de finalización habilitado.</div>
+              </span>
+            </div>
+            <strong>65%</strong>
+          </div>
+          <div class="bm-progress-bar">
+            <div class="bm-progress-fill" style="width: 65%"></div>
+          </div>
+        </div>
+
+        <!-- Fila 1 — tarjetas principales -->
+        <div class="bm-cards-main">
+
+          <a href="#actividades-pendientes" class="bm-link">
+            <div class="bm-card-main bm-c1 clickable" style="position:relative;">
+              <div class="bm-card-icon-wrap"><i class="fa-regular fa-clock"></i></div>
+              <div class="bm-card-body">
+                <div class="bm-card-num">16<span class="bm-badge">3 vencidas</span></div>
+                <div class="bm-card-label">Actividades pendientes</div>
+              </div>
+              <span class="click-hint"><i class="fa-solid fa-arrow-right"></i> Ver actividades</span>
+            </div>
+          </a>
+
+          <a href="#actividades-completadas" class="bm-link">
+            <div class="bm-card-main bm-c2 clickable" style="position:relative;">
+              <div class="bm-card-icon-wrap"><i class="fa-solid fa-circle-check"></i></div>
+              <div class="bm-card-body">
+                <div class="bm-card-num">12</div>
+                <div class="bm-card-label">Actividades completadas</div>
+              </div>
+              <span class="click-hint"><i class="fa-solid fa-arrow-right"></i> Ver actividades</span>
+            </div>
+          </a>
+
+          <a href="#mis-cursos" class="bm-link">
+            <div class="bm-card-main bm-c3 clickable" style="position:relative;">
+              <div class="bm-card-icon-wrap"><i class="fa-solid fa-graduation-cap"></i></div>
+              <div class="bm-card-body">
+                <div class="bm-card-num">2<span style="font-size:1rem;font-weight:400;color:#a0aec0">/10</span></div>
+                <div class="bm-card-label">Cursos completados</div>
+              </div>
+              <span class="click-hint"><i class="fa-solid fa-arrow-right"></i> Mis cursos</span>
+            </div>
+          </a>
+
+        </div>
+
+        <!-- Fila 2 — tarjetas secundarias -->
+        <div class="bm-cards-secondary">
+
+          <a href="#mensajes" class="bm-link">
+            <div class="bm-card-sec bm-s1 clickable" style="position:relative;">
+              <i class="fa-regular fa-comment-dots"></i>
+              <div class="bm-sec-num">0</div>
+              <div class="bm-sec-label">Mensajes sin leer</div>
+              <span class="click-hint" style="bottom:3px;right:4px;font-size:0.55rem;"><i class="fa-solid fa-arrow-right"></i></span>
+            </div>
+          </a>
+
+          <a href="#insignias" class="bm-link">
+            <div class="bm-card-sec bm-s2 clickable" style="position:relative;">
+              <i class="fa-solid fa-award"></i>
+              <div class="bm-sec-num">1</div>
+              <div class="bm-sec-label">Insignias</div>
+              <span class="click-hint" style="bottom:3px;right:4px;font-size:0.55rem;"><i class="fa-solid fa-arrow-right"></i></span>
+            </div>
+          </a>
+
+          <a href="#certificados" class="bm-link">
+            <div class="bm-card-sec bm-s3 clickable" style="position:relative;">
+              <i class="fa-regular fa-file-lines"></i>
+              <div class="bm-sec-num">28</div>
+              <div class="bm-sec-label">Certificados</div>
+              <span class="click-hint" style="bottom:3px;right:4px;font-size:0.55rem;"><i class="fa-solid fa-arrow-right"></i></span>
+            </div>
+          </a>
+
+          <!-- Sin link — estadísticas sin página destino -->
+          <div class="bm-card-sec bm-s4 no-link">
+            <i class="fa-solid fa-fire-flame-curved"></i>
+            <div class="bm-sec-num">7</div>
+            <div class="bm-sec-label">Días de racha <span class="bm-new-badge">nuevo</span></div>
+          </div>
+
+          <div class="bm-card-sec bm-s5 no-link">
+            <i class="fa-regular fa-comments"></i>
+            <div class="bm-sec-num">5</div>
+            <div class="bm-sec-label">Posts en foros <span class="bm-new-badge">nuevo</span></div>
+          </div>
+
+          <div class="bm-card-sec bm-s6 no-link">
+            <i class="fa-regular fa-clock"></i>
+            <div class="bm-sec-num">14h</div>
+            <div class="bm-sec-label">Tiempo este mes <span class="bm-new-badge">nuevo</span></div>
+          </div>
+
+        </div>
+
+        <!-- Próximos vencimientos — ítems con link -->
+        <div class="bm-deadlines">
+          <div class="bm-deadlines-title">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            Próximos vencimientos <span class="bm-new-badge">nuevo</span>
+          </div>
+
+          <a href="#evaluacion-final-m3" class="bm-deadline-item clickable">
+            <div class="bm-deadline-dot dot-urgent"></div>
+            <div class="bm-deadline-text">
+              <strong>Evaluación Final — Módulo 3</strong>
+              Curso: Gestión de Proyectos
+            </div>
+            <span class="bm-deadline-when urgent">Vence en 1 día</span>
+            <i class="fa-solid fa-chevron-right bm-deadline-arrow"></i>
+          </a>
+
+          <a href="#tarea-informe" class="bm-deadline-item clickable">
+            <div class="bm-deadline-dot dot-soon"></div>
+            <div class="bm-deadline-text">
+              <strong>Tarea: Informe de avance</strong>
+              Curso: Liderazgo Efectivo
+            </div>
+            <span class="bm-deadline-when soon">Vence en 4 días</span>
+            <i class="fa-solid fa-chevron-right bm-deadline-arrow"></i>
+          </a>
+
+          <a href="#quiz-u5" class="bm-deadline-item clickable">
+            <div class="bm-deadline-dot dot-ok"></div>
+            <div class="bm-deadline-text">
+              <strong>Quiz: Unidad 5</strong>
+              Curso: Excel Avanzado
+            </div>
+            <span class="bm-deadline-when ok">Vence en 6 días</span>
+            <i class="fa-solid fa-chevron-right bm-deadline-arrow"></i>
+          </a>
+
+        </div>
+
+      </div><!-- /block-mydata -->
+    </div>
+  </div>
+</div>
+
+
+<!-- VARIANTE COMPACTA -->
+<div class="section-wrap">
+  <div class="mockup-label">Variante compacta — Columna lateral estrecha</div>
+
+  <div style="display: flex; gap: 2rem; align-items: flex-start; justify-content: center;">
+
+    <div class="compact-wrap">
+      <div class="block-mydata-compact">
+
+        <div class="bmc-header">
+          <div class="bmc-avatar">DY</div>
+          <div class="bmc-user">
+            <h3>David Youssef</h3>
+            <p>Argentina · Dir. de Tecnología</p>
+          </div>
+        </div>
+
+        <div class="bmc-progress">
+          <div class="bmc-progress-top">
+            <span style="display:flex;align-items:center;gap:0.25rem;">
+              Progreso promedio
+              <span class="tooltip-wrap">
+                <i class="fa-solid fa-circle-info tooltip-icon"></i>
+                <div class="tooltip-box" style="left:0;transform:none;">Promedio del porcentaje de completitud en todos tus cursos activos.</div>
+              </span>
+            </span>
+            <strong>65%</strong>
+          </div>
+          <div class="bmc-bar"><div class="bmc-bar-fill" style="width:65%"></div></div>
+        </div>
+
+        <div class="bmc-group">
+          <a href="#actividades-pendientes" class="bmc-row clickable">
+            <i class="fa-regular fa-clock ri-orange"></i>
+            <span class="bmc-row-label">Actividades pendientes</span>
+            <span class="bmc-row-num">16</span>
+            <i class="fa-solid fa-chevron-right bmc-row-arrow"></i>
+          </a>
+          <a href="#actividades-completadas" class="bmc-row clickable">
+            <i class="fa-solid fa-circle-check ri-green"></i>
+            <span class="bmc-row-label">Completadas</span>
+            <span class="bmc-row-num">12</span>
+            <i class="fa-solid fa-chevron-right bmc-row-arrow"></i>
+          </a>
+          <a href="#mis-cursos" class="bmc-row clickable">
+            <i class="fa-solid fa-graduation-cap ri-blue"></i>
+            <span class="bmc-row-label">Cursos completados</span>
+            <span class="bmc-row-num">2/10</span>
+            <i class="fa-solid fa-chevron-right bmc-row-arrow"></i>
+          </a>
+        </div>
+
+        <div class="bmc-group">
+          <a href="#mensajes" class="bmc-row clickable">
+            <i class="fa-regular fa-comment-dots ri-purple"></i>
+            <span class="bmc-row-label">Mensajes sin leer</span>
+            <span class="bmc-row-num">0</span>
+            <i class="fa-solid fa-chevron-right bmc-row-arrow"></i>
+          </a>
+          <a href="#insignias" class="bmc-row clickable">
+            <i class="fa-solid fa-award ri-pink"></i>
+            <span class="bmc-row-label">Insignias</span>
+            <span class="bmc-row-num">1</span>
+            <i class="fa-solid fa-chevron-right bmc-row-arrow"></i>
+          </a>
+          <a href="#certificados" class="bmc-row clickable">
+            <i class="fa-regular fa-file-lines ri-amber"></i>
+            <span class="bmc-row-label">Certificados</span>
+            <span class="bmc-row-num">28</span>
+            <i class="fa-solid fa-chevron-right bmc-row-arrow"></i>
+          </a>
+          <!-- Sin link -->
+          <div class="bmc-row no-link">
+            <i class="fa-solid fa-fire-flame-curved ri-orange"></i>
+            <span class="bmc-row-label">Días de racha</span>
+            <span class="bmc-row-num">7</span>
+          </div>
+          <div class="bmc-row no-link">
+            <i class="fa-regular fa-clock ri-teal"></i>
+            <span class="bmc-row-label">Tiempo este mes</span>
+            <span class="bmc-row-num">14h</span>
+          </div>
+        </div>
+
+        <div class="bmc-group" style="padding: 0.55rem 1rem 0.6rem;">
+          <div style="font-size:0.65rem;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:#a0aec0;margin-bottom:0.4rem;display:flex;align-items:center;gap:0.35rem;">
+            <i class="fa-solid fa-triangle-exclamation" style="color:#ef4444;font-size:0.6rem;"></i>Próximos vencimientos
+          </div>
+          <a href="#evaluacion-final-m3" style="font-size:0.73rem;color:#4a5568;display:flex;align-items:center;gap:0.5rem;margin-bottom:0.35rem;text-decoration:none;border-radius:4px;padding:0.2rem 0.25rem;transition:background 0.12s;" onmouseover="this.style.background='#f0f5ff'" onmouseout="this.style.background='transparent'">
+            <div style="width:6px;height:6px;border-radius:50%;background:#dc2626;flex-shrink:0;"></div>
+            <span style="flex:1;">Evaluación Final — M3</span>
+            <span style="color:#dc2626;font-weight:600;font-size:0.68rem;">1 día</span>
+            <i class="fa-solid fa-chevron-right" style="font-size:0.55rem;color:#a0aec0;"></i>
+          </a>
+          <a href="#tarea-informe" style="font-size:0.73rem;color:#4a5568;display:flex;align-items:center;gap:0.5rem;margin-bottom:0.35rem;text-decoration:none;border-radius:4px;padding:0.2rem 0.25rem;transition:background 0.12s;" onmouseover="this.style.background='#f0f5ff'" onmouseout="this.style.background='transparent'">
+            <div style="width:6px;height:6px;border-radius:50%;background:#ea580c;flex-shrink:0;"></div>
+            <span style="flex:1;">Informe de avance</span>
+            <span style="color:#ea580c;font-weight:600;font-size:0.68rem;">4 días</span>
+            <i class="fa-solid fa-chevron-right" style="font-size:0.55rem;color:#a0aec0;"></i>
+          </a>
+          <a href="#quiz-u5" style="font-size:0.73rem;color:#4a5568;display:flex;align-items:center;gap:0.5rem;text-decoration:none;border-radius:4px;padding:0.2rem 0.25rem;transition:background 0.12s;" onmouseover="this.style.background='#f0f5ff'" onmouseout="this.style.background='transparent'">
+            <div style="width:6px;height:6px;border-radius:50%;background:#16a34a;flex-shrink:0;"></div>
+            <span style="flex:1;">Quiz: Unidad 5</span>
+            <span style="color:#16a34a;font-weight:600;font-size:0.68rem;">6 días</span>
+            <i class="fa-solid fa-chevron-right" style="font-size:0.55rem;color:#a0aec0;"></i>
+          </a>
+        </div>
+
+      </div>
+    </div>
+
+    <div style="max-width:340px;font-size:0.82rem;color:#4a5568;line-height:1.7;padding-top:0.5rem;">
+      <p style="font-weight:600;color:#2d3748;margin-bottom:0.75rem;">Interacciones implementadas:</p>
+      <ul style="padding-left:1.1rem;">
+        <li><strong>Con link</strong> — Al hacer hover aparece flecha →. Click navega a la sección correspondiente en Moodle: actividades, mensajes, insignias, certificados, cursos, y cada actividad de los vencimientos.</li>
+        <li style="margin-top:0.5rem;"><strong>Sin link</strong> — Días de racha, posts en foros y tiempo este mes son estadísticas puras: no tienen cursor pointer ni efecto hover.</li>
+        <li style="margin-top:0.5rem;"><strong>Tooltip ⓘ</strong> — En el progreso promedio, posicionarse sobre el ícono muestra la explicación.</li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+<div class="mockup-notes">
+  <h4>Maqueta v2 — Opción A (estilo limpio / corporativo)</h4>
+  <ul>
+    <li>Los links con <code>#hash</code> son placeholder — en el plugin real apuntarán a las URLs de Moodle correspondientes.</li>
+    <li>Las tarjetas sin hover (racha, foros, tiempo) no tendrán cursor pointer en la implementación final.</li>
+    <li>Ver <strong>mockup_v2_alt.html</strong> para la opción B con estética diferente.</li>
+  </ul>
+</div>
+
+</body>
+</html>

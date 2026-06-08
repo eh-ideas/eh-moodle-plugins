@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>block_mydata v2 — Maqueta visual — Opción B</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: #0f1117;
+    color: #e2e8f0;
+    padding: 2rem;
+  }
+
+  .mockup-label {
+    font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+    color: #4a5568; margin-bottom: 0.75rem;
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .mockup-label::before, .mockup-label::after { content:''; flex:1; height:1px; background:#1e2535; }
+  .section-wrap { margin-bottom: 3rem; }
+
+  /* Moodle chrome oscuro */
+  .moodle-chrome {
+    background: #161b27;
+    border-radius: 16px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+    overflow: hidden;
+    max-width: 980px;
+    margin: 0 auto;
+    border: 1px solid #1e2535;
+  }
+  .moodle-topbar {
+    background: #0d1117;
+    padding: 0.65rem 1.5rem;
+    display: flex; align-items: center; gap: 1.5rem;
+    font-size: 0.82rem; color: #64748b;
+    border-bottom: 1px solid #1e2535;
+  }
+  .moodle-topbar strong { color: #e2e8f0; font-size: 1rem; }
+  .moodle-topbar .spacer { flex: 1; }
+  .moodle-topbar .user-pill {
+    display: flex; align-items: center; gap: 0.5rem;
+    background: #1e2535; padding: 0.3rem 0.75rem; border-radius: 20px;
+    color: #94a3b8;
+  }
+  .moodle-page-header {
+    background: linear-gradient(135deg, #0d1117 0%, #161b27 100%);
+    padding: 1.25rem 2rem 1.5rem;
+    border-bottom: 1px solid #1e2535;
+  }
+  .moodle-page-header h1 { font-size: 1.3rem; font-weight: 600; color: #f1f5f9; }
+  .moodle-content { padding: 1.5rem; background: #161b27; }
+
+  /* ══ BLOQUE PRINCIPAL ══ */
+  .block-mydata {
+    background: #1e2535;
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid #2a3347;
+  }
+
+  /* Cabecera */
+  .bm-header {
+    padding: 1.25rem 1.5rem;
+    display: flex; align-items: center; gap: 1.25rem;
+    border-bottom: 1px solid #2a3347;
+    background: linear-gradient(135deg, #1e2535 0%, #202b3d 100%);
+  }
+  .bm-avatar {
+    width: 64px; height: 64px; border-radius: 50%; flex-shrink: 0;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-size: 1.4rem; font-weight: 700;
+    box-shadow: 0 0 0 3px rgba(99,102,241,0.25), 0 4px 14px rgba(99,102,241,0.4);
+  }
+  .bm-user-info h2 { font-size: 1.05rem; font-weight: 600; color: #f1f5f9; margin-bottom: 0.2rem; }
+  .bm-user-info .bm-meta {
+    font-size: 0.77rem; color: #64748b;
+    display: flex; flex-wrap: wrap; gap: 0.75rem;
+  }
+  .bm-user-info .bm-meta span { display: flex; align-items: center; gap: 0.3rem; }
+  .bm-user-info .bm-meta i { font-size: 0.68rem; color: #475569; }
+
+  /* Barra de progreso */
+  .bm-progress-wrap {
+    padding: 0.85rem 1.5rem;
+    border-bottom: 1px solid #2a3347;
+    background: #192030;
+  }
+  .bm-progress-label {
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 0.74rem; color: #64748b; margin-bottom: 0.45rem;
+  }
+  .bm-progress-label .left { display: flex; align-items: center; gap: 0.3rem; }
+  .bm-progress-label strong { color: #a5b4fc; font-size: 0.88rem; }
+  .bm-progress-bar { height: 6px; background: #2a3347; border-radius: 99px; overflow: hidden; }
+  .bm-progress-fill { height: 100%; background: linear-gradient(90deg, #6366f1, #a78bfa); border-radius: 99px; }
+
+  /* Tooltip */
+  .tooltip-wrap { position: relative; display: inline-flex; align-items: center; }
+  .tooltip-icon { color: #475569; font-size: 0.68rem; cursor: help; margin-left: 0.25rem; transition: color 0.15s; }
+  .tooltip-icon:hover { color: #818cf8; }
+  .tooltip-box {
+    display: none; position: absolute; bottom: calc(100% + 7px); left: 50%;
+    transform: translateX(-50%);
+    background: #0d1117; color: #cbd5e1;
+    font-size: 0.72rem; line-height: 1.5;
+    padding: 0.55rem 0.8rem; border-radius: 8px;
+    width: 220px; z-index: 100;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    border: 1px solid #2a3347;
+    pointer-events: none;
+  }
+  .tooltip-box::after {
+    content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
+    border: 5px solid transparent; border-top-color: #0d1117;
+  }
+  .tooltip-wrap:hover .tooltip-box { display: block; }
+
+  /* Tarjetas principales — gradientes de color */
+  .bm-cards-main {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;
+    padding: 1.25rem 1.25rem 0;
+  }
+  .bm-card-main {
+    border-radius: 12px;
+    padding: 1.1rem 1.25rem 1rem;
+    position: relative; overflow: hidden;
+    transition: transform 0.18s, box-shadow 0.18s;
+    text-decoration: none; color: inherit;
+    display: block;
+  }
+  .bm-card-main.no-link { cursor: default; }
+  .bm-card-main:not(.no-link):hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.35); }
+  /* Gradientes individuales */
+  .bm-c1 { background: linear-gradient(135deg, #1e3a5f 0%, #1e4976 100%); border: 1px solid #2563eb33; }
+  .bm-c2 { background: linear-gradient(135deg, #14532d 0%, #166534 100%); border: 1px solid #16a34a33; }
+  .bm-c3 { background: linear-gradient(135deg, #3b1a6b 0%, #4c1d95 100%); border: 1px solid #7c3aed33; }
+  /* Brillo decorativo */
+  .bm-card-main::before {
+    content: '';
+    position: absolute; top: -30px; right: -20px;
+    width: 90px; height: 90px; border-radius: 50%;
+    background: rgba(255,255,255,0.04);
+  }
+  .bm-card-main::after {
+    content: '';
+    position: absolute; bottom: -20px; left: 10px;
+    width: 60px; height: 60px; border-radius: 50%;
+    background: rgba(255,255,255,0.03);
+  }
+  .bm-card-icon {
+    font-size: 1.25rem; margin-bottom: 0.75rem; display: block;
+    opacity: 0.8;
+  }
+  .bm-c1 .bm-card-icon { color: #60a5fa; }
+  .bm-c2 .bm-card-icon { color: #4ade80; }
+  .bm-c3 .bm-card-icon { color: #c084fc; }
+  .bm-card-num {
+    font-size: 2rem; font-weight: 800; line-height: 1;
+    color: #f1f5f9; letter-spacing: -0.02em;
+  }
+  .bm-card-sub { font-size: 0.95rem; font-weight: 400; color: rgba(241,245,249,0.5); margin-left: 0.1rem; }
+  .bm-card-label { font-size: 0.74rem; color: rgba(241,245,249,0.55); margin-top: 0.35rem; }
+  .bm-card-badge {
+    display: inline-block;
+    font-size: 0.62rem; font-weight: 700;
+    background: rgba(239,68,68,0.25); color: #fca5a5;
+    border: 1px solid rgba(239,68,68,0.3);
+    padding: 0.1rem 0.45rem; border-radius: 99px;
+    margin-top: 0.4rem;
+  }
+  .bm-card-arrow {
+    position: absolute; bottom: 10px; right: 12px;
+    font-size: 0.65rem; color: rgba(255,255,255,0.2);
+    transition: color 0.15s, transform 0.15s;
+  }
+  .bm-card-main:not(.no-link):hover .bm-card-arrow { color: rgba(255,255,255,0.6); transform: translateX(2px); }
+
+  /* Tarjetas secundarias — pills en fila */
+  .bm-cards-secondary {
+    display: grid; grid-template-columns: repeat(6, 1fr);
+    gap: 0.6rem;
+    padding: 1rem 1.25rem;
+  }
+  .bm-card-sec {
+    background: #192030;
+    border: 1px solid #2a3347;
+    border-radius: 10px;
+    padding: 0.8rem 0.5rem;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center; gap: 0.3rem;
+    transition: border-color 0.15s, background 0.15s, transform 0.15s;
+    text-decoration: none; color: inherit;
+    position: relative;
+  }
+  .bm-card-sec:not(.no-link):hover {
+    background: #202b3d; border-color: #3b4d6b;
+    transform: translateY(-2px);
+  }
+  .bm-card-sec i { font-size: 1rem; }
+  .bm-sec-num { font-size: 1.05rem; font-weight: 700; color: #f1f5f9; line-height: 1; }
+  .bm-sec-label { font-size: 0.6rem; color: #4a5568; line-height: 1.25; }
+  .bm-s1 i { color: #a78bfa; }
+  .bm-s2 i { color: #f472b6; }
+  .bm-s3 i { color: #fbbf24; }
+  .bm-s4 i { color: #fb923c; }
+  .bm-s5 i { color: #34d399; }
+  .bm-s6 i { color: #38bdf8; }
+  .bm-card-sec .sec-arrow {
+    position: absolute; top: 6px; right: 7px;
+    font-size: 0.5rem; color: #3b4d6b; opacity: 0; transition: opacity 0.15s;
+  }
+  .bm-card-sec:not(.no-link):hover .sec-arrow { opacity: 1; }
+
+  /* Sección vencimientos */
+  .bm-deadlines {
+    margin: 0 1.25rem 1.25rem;
+    background: #192030;
+    border: 1px solid #2a3347;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .bm-deadlines-title {
+    padding: 0.65rem 1rem;
+    font-size: 0.7rem; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.07em; color: #4a5568;
+    display: flex; align-items: center; gap: 0.4rem;
+    border-bottom: 1px solid #2a3347;
+  }
+  .bm-deadlines-title i { color: #f87171; }
+  .bm-deadline-item {
+    display: flex; align-items: center; gap: 0.85rem;
+    padding: 0.65rem 1rem;
+    border-bottom: 1px solid #1e2535;
+    text-decoration: none; color: inherit;
+    transition: background 0.15s;
+  }
+  .bm-deadline-item:last-child { border-bottom: none; }
+  .bm-deadline-item:hover { background: #202b3d; }
+  .bm-deadline-item:hover .bm-deadline-text strong { color: #818cf8; }
+  .bm-deadline-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .dot-urgent { background: #ef4444; box-shadow: 0 0 6px rgba(239,68,68,0.6); }
+  .dot-soon   { background: #f97316; box-shadow: 0 0 6px rgba(249,115,22,0.5); }
+  .dot-ok     { background: #22c55e; box-shadow: 0 0 6px rgba(34,197,94,0.4); }
+  .bm-deadline-text { flex: 1; }
+  .bm-deadline-text strong { font-size: 0.8rem; color: #cbd5e1; display: block; transition: color 0.15s; font-weight: 600; }
+  .bm-deadline-text span { font-size: 0.7rem; color: #475569; }
+  .bm-deadline-when {
+    font-size: 0.68rem; font-weight: 700;
+    padding: 0.2rem 0.6rem; border-radius: 99px;
+    white-space: nowrap;
+  }
+  .urgent { background: rgba(239,68,68,0.15); color: #fca5a5; border: 1px solid rgba(239,68,68,0.2); }
+  .soon   { background: rgba(249,115,22,0.15); color: #fdba74; border: 1px solid rgba(249,115,22,0.2); }
+  .ok     { background: rgba(34,197,94,0.12); color: #86efac; border: 1px solid rgba(34,197,94,0.2); }
+  .bm-deadline-arrow { font-size: 0.65rem; color: #2a3347; transition: color 0.15s, transform 0.15s; }
+  .bm-deadline-item:hover .bm-deadline-arrow { color: #818cf8; transform: translateX(2px); }
+
+  /* Badges */
+  .bm-new-badge {
+    font-size: 0.52rem; font-weight: 700; text-transform: uppercase;
+    background: rgba(99,102,241,0.2); color: #a5b4fc;
+    border: 1px solid rgba(99,102,241,0.3);
+    padding: 0.1rem 0.35rem; border-radius: 4px;
+    vertical-align: middle; margin-left: 0.3rem; letter-spacing: 0.04em;
+  }
+
+  /* ══ VARIANTE COMPACTA ══ */
+  .compact-wrap { max-width: 270px; }
+  .block-mydata-compact {
+    background: #1e2535;
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid #2a3347;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  }
+  .bmc-header {
+    padding: 1rem;
+    display: flex; align-items: center; gap: 0.8rem;
+    background: linear-gradient(135deg, #1e2535, #202b3d);
+    border-bottom: 1px solid #2a3347;
+  }
+  .bmc-avatar {
+    width: 42px; height: 42px; border-radius: 50%; flex-shrink: 0;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-size: 0.95rem; font-weight: 700;
+    box-shadow: 0 0 0 2px rgba(99,102,241,0.25);
+  }
+  .bmc-user h3 { font-size: 0.83rem; font-weight: 600; color: #f1f5f9; }
+  .bmc-user p  { font-size: 0.7rem; color: #4a5568; }
+  .bmc-progress {
+    padding: 0.65rem 1rem;
+    background: #192030;
+    border-bottom: 1px solid #2a3347;
+  }
+  .bmc-progress-top {
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 0.7rem; color: #4a5568; margin-bottom: 0.35rem;
+  }
+  .bmc-progress-top strong { color: #a5b4fc; }
+  .bmc-bar { height: 4px; background: #2a3347; border-radius: 99px; overflow: hidden; }
+  .bmc-bar-fill { height: 100%; background: linear-gradient(90deg, #6366f1, #a78bfa); border-radius: 99px; }
+  .bmc-group { border-bottom: 1px solid #2a3347; }
+  .bmc-group:last-child { border-bottom: none; }
+  .bmc-row {
+    display: flex; align-items: center; gap: 0.7rem;
+    padding: 0.5rem 1rem;
+    transition: background 0.12s;
+    text-decoration: none; color: inherit;
+  }
+  .bmc-row:not(.no-link):hover { background: #202b3d; }
+  .bmc-row:not(.no-link):hover .bmc-row-num { color: #a5b4fc; }
+  .bmc-row i { width: 16px; text-align: center; font-size: 0.8rem; }
+  .bmc-row .bmc-row-label { flex: 1; font-size: 0.74rem; color: #64748b; }
+  .bmc-row .bmc-row-num { font-weight: 700; color: #e2e8f0; font-size: 0.85rem; margin-left: auto; transition: color 0.15s; }
+  .bmc-arrow { font-size: 0.55rem; color: #2a3347; opacity: 0; transition: opacity 0.15s, color 0.15s; margin-left: 0.2rem; }
+  .bmc-row:not(.no-link):hover .bmc-arrow { opacity: 1; color: #818cf8; }
+  .ri-blue   { color: #60a5fa; }
+  .ri-green  { color: #4ade80; }
+  .ri-purple { color: #a78bfa; }
+  .ri-pink   { color: #f472b6; }
+  .ri-amber  { color: #fbbf24; }
+  .ri-orange { color: #fb923c; }
+  .ri-teal   { color: #38bdf8; }
+
+  /* Vencimientos compactos */
+  .bmc-deadlines-wrap {
+    padding: 0.6rem 1rem 0.75rem;
+  }
+  .bmc-deadlines-title {
+    font-size: 0.62rem; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: #374151; margin-bottom: 0.45rem;
+    display: flex; align-items: center; gap: 0.35rem;
+  }
+  .bmc-deadlines-title i { color: #f87171; font-size: 0.58rem; }
+  .bmc-deadline-row {
+    display: flex; align-items: center; gap: 0.5rem;
+    font-size: 0.72rem; color: #64748b;
+    padding: 0.22rem 0.3rem; border-radius: 4px;
+    text-decoration: none; color: inherit;
+    transition: background 0.12s;
+  }
+  .bmc-deadline-row:hover { background: #202b3d; }
+  .bmc-deadline-row:hover .bmc-dl-name { color: #818cf8; }
+  .bmc-dl-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+  .bmc-dl-name { flex: 1; font-size: 0.71rem; color: #94a3b8; transition: color 0.15s; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .bmc-dl-when { font-size: 0.67rem; font-weight: 700; white-space: nowrap; }
+
+  /* Notas */
+  .mockup-notes {
+    max-width: 980px; margin: 2rem auto 0;
+    background: #161b27; border: 1px solid #2a3347;
+    border-radius: 10px; padding: 1rem 1.25rem;
+    font-size: 0.79rem; color: #64748b;
+  }
+  .mockup-notes h4 { font-size: 0.8rem; margin-bottom: 0.5rem; color: #94a3b8; }
+  .mockup-notes ul { padding-left: 1.2rem; }
+  .mockup-notes li { margin-bottom: 0.3rem; }
+  .mockup-notes a { color: #818cf8; text-decoration: none; }
+  .mockup-notes a:hover { text-decoration: underline; }
+
+  /* Comparación header */
+  .compare-header {
+    display: flex; gap: 1rem; align-items: center; justify-content: center;
+    margin-bottom: 2rem; flex-wrap: wrap;
+  }
+  .compare-btn {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    padding: 0.55rem 1.1rem; border-radius: 8px;
+    font-size: 0.82rem; font-weight: 600; text-decoration: none;
+    transition: background 0.15s;
+  }
+  .btn-a { background: #1e2535; color: #94a3b8; border: 1px solid #2a3347; }
+  .btn-a:hover { background: #202b3d; }
+  .btn-b { background: #312e81; color: #a5b4fc; border: 1px solid #4338ca; }
+  .btn-b:hover { background: #3730a3; }
+</style>
+</head>
+<body>
+
+<!-- Botones de comparación -->
+<div class="compare-header">
+  <a href="mockup_v2.html" class="compare-btn btn-a"><i class="fa-solid fa-arrow-left"></i> Opción A — Estilo claro</a>
+  <span style="color:#2a3347;font-size:0.75rem;">comparar</span>
+  <span class="compare-btn btn-b" style="cursor:default;"><i class="fa-solid fa-circle" style="font-size:0.5rem;"></i> Opción B — Estilo oscuro (esta)</span>
+</div>
+
+<!-- VARIANTE COMPLETA -->
+<div class="section-wrap">
+  <div class="mockup-label">Variante completa — Área personal (ancho completo)</div>
+
+  <div class="moodle-chrome">
+    <div class="moodle-topbar">
+      <strong>eh!ideas</strong>
+      <span>Mis Cursos</span><span>Mis Certificados</span><span>Rutas</span>
+      <span class="spacer"></span>
+      <div class="user-pill"><i class="fa-solid fa-circle-user"></i> Administrador</div>
+    </div>
+    <div class="moodle-page-header"><h1>Área personal</h1></div>
+    <div class="moodle-content">
+
+      <div class="block-mydata">
+
+        <!-- Cabecera -->
+        <div class="bm-header">
+          <div class="bm-avatar">DY</div>
+          <div class="bm-user-info">
+            <h2>¡Hola, David, bienvenido/a!</h2>
+            <div class="bm-meta">
+              <span><i class="fa-solid fa-location-dot"></i> Argentina</span>
+              <span><i class="fa-solid fa-envelope"></i> david.youssef@ehideas.com</span>
+              <span><i class="fa-solid fa-briefcase"></i> Director de Tecnología</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Barra de progreso -->
+        <div class="bm-progress-wrap">
+          <div class="bm-progress-label">
+            <div class="left">
+              <span>Progreso promedio en tus cursos activos</span>
+              <span class="bm-new-badge">nuevo</span>
+              <span class="tooltip-wrap">
+                <i class="fa-solid fa-circle-info tooltip-icon"></i>
+                <div class="tooltip-box">Promedio del porcentaje de completitud en todos tus cursos activos. Solo considera actividades con seguimiento de finalización habilitado.</div>
+              </span>
+            </div>
+            <strong>65%</strong>
+          </div>
+          <div class="bm-progress-bar">
+            <div class="bm-progress-fill" style="width:65%"></div>
+          </div>
+        </div>
+
+        <!-- Tarjetas principales con gradiente -->
+        <div class="bm-cards-main">
+
+          <a href="#actividades-pendientes" class="bm-card-main bm-c1">
+            <i class="fa-regular fa-clock bm-card-icon"></i>
+            <div class="bm-card-num">16</div>
+            <div class="bm-card-badge"><i class="fa-solid fa-triangle-exclamation" style="font-size:0.55rem;margin-right:0.2rem;"></i>3 vencidas</div>
+            <div class="bm-card-label">Actividades pendientes</div>
+            <i class="fa-solid fa-arrow-up-right-from-square bm-card-arrow"></i>
+          </a>
+
+          <a href="#actividades-completadas" class="bm-card-main bm-c2">
+            <i class="fa-solid fa-circle-check bm-card-icon"></i>
+            <div class="bm-card-num">12</div>
+            <div class="bm-card-label" style="margin-top:0.8rem;">Actividades completadas</div>
+            <i class="fa-solid fa-arrow-up-right-from-square bm-card-arrow"></i>
+          </a>
+
+          <a href="#mis-cursos" class="bm-card-main bm-c3">
+            <i class="fa-solid fa-graduation-cap bm-card-icon"></i>
+            <div class="bm-card-num">2<span class="bm-card-sub">/10</span></div>
+            <div class="bm-card-label" style="margin-top:0.8rem;">Cursos completados</div>
+            <i class="fa-solid fa-arrow-up-right-from-square bm-card-arrow"></i>
+          </a>
+
+        </div>
+
+        <!-- Tarjetas secundarias -->
+        <div class="bm-cards-secondary">
+
+          <a href="#mensajes" class="bm-card-sec bm-s1">
+            <i class="fa-solid fa-chevron-right sec-arrow"></i>
+            <i class="fa-regular fa-comment-dots"></i>
+            <div class="bm-sec-num">0</div>
+            <div class="bm-sec-label">Mensajes sin leer</div>
+          </a>
+
+          <a href="#insignias" class="bm-card-sec bm-s2">
+            <i class="fa-solid fa-chevron-right sec-arrow"></i>
+            <i class="fa-solid fa-award"></i>
+            <div class="bm-sec-num">1</div>
+            <div class="bm-sec-label">Insignias</div>
+          </a>
+
+          <a href="#certificados" class="bm-card-sec bm-s3">
+            <i class="fa-solid fa-chevron-right sec-arrow"></i>
+            <i class="fa-regular fa-file-lines"></i>
+            <div class="bm-sec-num">28</div>
+            <div class="bm-sec-label">Certificados</div>
+          </a>
+
+          <div class="bm-card-sec bm-s4 no-link">
+            <i class="fa-solid fa-fire-flame-curved"></i>
+            <div class="bm-sec-num">7</div>
+            <div class="bm-sec-label">Días de racha <span class="bm-new-badge">nuevo</span></div>
+          </div>
+
+          <div class="bm-card-sec bm-s5 no-link">
+            <i class="fa-regular fa-comments"></i>
+            <div class="bm-sec-num">5</div>
+            <div class="bm-sec-label">Posts en foros <span class="bm-new-badge">nuevo</span></div>
+          </div>
+
+          <div class="bm-card-sec bm-s6 no-link">
+            <i class="fa-regular fa-clock"></i>
+            <div class="bm-sec-num">14h</div>
+            <div class="bm-sec-label">Tiempo este mes <span class="bm-new-badge">nuevo</span></div>
+          </div>
+
+        </div>
+
+        <!-- Próximos vencimientos -->
+        <div class="bm-deadlines">
+          <div class="bm-deadlines-title">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            Próximos vencimientos
+            <span class="bm-new-badge">nuevo</span>
+          </div>
+
+          <a href="#evaluacion-final-m3" class="bm-deadline-item">
+            <div class="bm-deadline-dot dot-urgent"></div>
+            <div class="bm-deadline-text">
+              <strong>Evaluación Final — Módulo 3</strong>
+              <span>Gestión de Proyectos</span>
+            </div>
+            <span class="bm-deadline-when urgent">Vence en 1 día</span>
+            <i class="fa-solid fa-chevron-right bm-deadline-arrow"></i>
+          </a>
+
+          <a href="#tarea-informe" class="bm-deadline-item">
+            <div class="bm-deadline-dot dot-soon"></div>
+            <div class="bm-deadline-text">
+              <strong>Tarea: Informe de avance</strong>
+              <span>Liderazgo Efectivo</span>
+            </div>
+            <span class="bm-deadline-when soon">Vence en 4 días</span>
+            <i class="fa-solid fa-chevron-right bm-deadline-arrow"></i>
+          </a>
+
+          <a href="#quiz-u5" class="bm-deadline-item">
+            <div class="bm-deadline-dot dot-ok"></div>
+            <div class="bm-deadline-text">
+              <strong>Quiz: Unidad 5</strong>
+              <span>Excel Avanzado</span>
+            </div>
+            <span class="bm-deadline-when ok">Vence en 6 días</span>
+            <i class="fa-solid fa-chevron-right bm-deadline-arrow"></i>
+          </a>
+        </div>
+
+      </div><!-- /block-mydata -->
+    </div>
+  </div>
+</div>
+
+
+<!-- VARIANTE COMPACTA -->
+<div class="section-wrap">
+  <div class="mockup-label">Variante compacta — Columna lateral estrecha</div>
+
+  <div style="display:flex;gap:2rem;align-items:flex-start;justify-content:center;">
+
+    <div class="compact-wrap">
+      <div class="block-mydata-compact">
+
+        <div class="bmc-header">
+          <div class="bmc-avatar">DY</div>
+          <div class="bmc-user">
+            <h3>David Youssef</h3>
+            <p>Argentina · Dir. de Tecnología</p>
+          </div>
+        </div>
+
+        <div class="bmc-progress">
+          <div class="bmc-progress-top">
+            <span style="display:flex;align-items:center;gap:0.25rem;">
+              Progreso promedio
+              <span class="tooltip-wrap">
+                <i class="fa-solid fa-circle-info tooltip-icon"></i>
+                <div class="tooltip-box" style="left:0;transform:none;">Promedio del porcentaje de completitud en todos tus cursos activos.</div>
+              </span>
+            </span>
+            <strong>65%</strong>
+          </div>
+          <div class="bmc-bar"><div class="bmc-bar-fill" style="width:65%"></div></div>
+        </div>
+
+        <div class="bmc-group">
+          <a href="#actividades-pendientes" class="bmc-row">
+            <i class="fa-regular fa-clock ri-blue"></i>
+            <span class="bmc-row-label">Act. pendientes</span>
+            <span class="bmc-row-num">16</span>
+            <i class="fa-solid fa-chevron-right bmc-arrow"></i>
+          </a>
+          <a href="#actividades-completadas" class="bmc-row">
+            <i class="fa-solid fa-circle-check ri-green"></i>
+            <span class="bmc-row-label">Completadas</span>
+            <span class="bmc-row-num">12</span>
+            <i class="fa-solid fa-chevron-right bmc-arrow"></i>
+          </a>
+          <a href="#mis-cursos" class="bmc-row">
+            <i class="fa-solid fa-graduation-cap ri-purple"></i>
+            <span class="bmc-row-label">Cursos</span>
+            <span class="bmc-row-num">2/10</span>
+            <i class="fa-solid fa-chevron-right bmc-arrow"></i>
+          </a>
+        </div>
+
+        <div class="bmc-group">
+          <a href="#mensajes" class="bmc-row">
+            <i class="fa-regular fa-comment-dots ri-purple"></i>
+            <span class="bmc-row-label">Mensajes</span>
+            <span class="bmc-row-num">0</span>
+            <i class="fa-solid fa-chevron-right bmc-arrow"></i>
+          </a>
+          <a href="#insignias" class="bmc-row">
+            <i class="fa-solid fa-award ri-pink"></i>
+            <span class="bmc-row-label">Insignias</span>
+            <span class="bmc-row-num">1</span>
+            <i class="fa-solid fa-chevron-right bmc-arrow"></i>
+          </a>
+          <a href="#certificados" class="bmc-row">
+            <i class="fa-regular fa-file-lines ri-amber"></i>
+            <span class="bmc-row-label">Certificados</span>
+            <span class="bmc-row-num">28</span>
+            <i class="fa-solid fa-chevron-right bmc-arrow"></i>
+          </a>
+          <div class="bmc-row no-link">
+            <i class="fa-solid fa-fire-flame-curved ri-orange"></i>
+            <span class="bmc-row-label">Días de racha</span>
+            <span class="bmc-row-num">7</span>
+          </div>
+          <div class="bmc-row no-link">
+            <i class="fa-regular fa-clock ri-teal"></i>
+            <span class="bmc-row-label">Tiempo este mes</span>
+            <span class="bmc-row-num">14h</span>
+          </div>
+        </div>
+
+        <div class="bmc-deadlines-wrap">
+          <div class="bmc-deadlines-title">
+            <i class="fa-solid fa-triangle-exclamation"></i>Próximos vencimientos
+          </div>
+          <a href="#evaluacion-final-m3" class="bmc-deadline-row">
+            <div class="bmc-dl-dot" style="background:#ef4444;box-shadow:0 0 5px rgba(239,68,68,0.5);"></div>
+            <span class="bmc-dl-name">Evaluación Final — M3</span>
+            <span class="bmc-dl-when" style="color:#fca5a5;">1 día</span>
+          </a>
+          <a href="#tarea-informe" class="bmc-deadline-row">
+            <div class="bmc-dl-dot" style="background:#f97316;box-shadow:0 0 5px rgba(249,115,22,0.4);"></div>
+            <span class="bmc-dl-name">Informe de avance</span>
+            <span class="bmc-dl-when" style="color:#fdba74;">4 días</span>
+          </a>
+          <a href="#quiz-u5" class="bmc-deadline-row">
+            <div class="bmc-dl-dot" style="background:#22c55e;box-shadow:0 0 5px rgba(34,197,94,0.4);"></div>
+            <span class="bmc-dl-name">Quiz: Unidad 5</span>
+            <span class="bmc-dl-when" style="color:#86efac;">6 días</span>
+          </a>
+        </div>
+
+      </div>
+    </div>
+
+    <div style="max-width:320px;font-size:0.81rem;color:#64748b;line-height:1.75;padding-top:0.5rem;">
+      <p style="font-weight:600;color:#94a3b8;margin-bottom:0.75rem;">Diferencias clave vs Opción A:</p>
+      <ul style="padding-left:1.1rem;">
+        <li>Fondo oscuro — se adapta bien a temas dark de Moodle</li>
+        <li>Tarjetas principales con <strong style="color:#a5b4fc;">gradientes de color</strong> individuales en vez de íconos coloreados sobre fondo blanco</li>
+        <li>Número estadístico más grande y prominente</li>
+        <li>Puntos de vencimiento con <strong style="color:#a5b4fc;">glow de luz</strong> según urgencia</li>
+        <li>Tarjetas secundarias con bordes sutiles en vez de separadores</li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+
+<div class="mockup-notes">
+  <h4>Maqueta v2 — Opción B (estilo oscuro / dark mode)</h4>
+  <ul>
+    <li>Comparar con <a href="mockup_v2.html">Opción A — estilo claro</a> para decidir la dirección visual.</li>
+    <li>Si la plataforma usa un tema claro en Moodle, la Opción A puede encajar más naturalmente.</li>
+    <li>Si se prefiere un look más "app moderna", la Opción B diferencia visualmente el bloque del resto del contenido de Moodle.</li>
+    <li>Ambas opciones tienen exactamente las mismas funcionalidades e interacciones.</li>
+  </ul>
+</div>
+
+</body>
+</html>
